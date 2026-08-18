@@ -1,0 +1,9 @@
+# Everything install.sh downloads or produces lives outside this repo's own
+# tracked files -- but ignore common local test/install targets anyway in
+# case someone installs into a directory under the repo itself.
+/portable-agent/
+/dist/
+*.log
+*.log.err
+.DS_Store
+node_modules/

@@ -1,0 +1,87 @@
+{
+  "topics": [
+    {
+      "id": "greedy_overview",
+      "file": "greedy_overview.md",
+      "category": "greedy",
+      "description": "General idea of greedy algorithms: greedy-choice property, optimal substructure, exchange-argument proofs, when greedy works vs fails",
+      "aliases": [
+        "greedy algorithm", "greedy algorithms", "greedy approach", "greedy method",
+        "greedy technique", "greedy strategy", "general greedy idea", "what is greedy",
+        "greedy choice property", "optimal substructure", "exchange argument"
+      ]
+    },
+    {
+      "id": "huffman_coding",
+      "file": "huffman_coding.md",
+      "category": "greedy",
+      "description": "Huffman coding: optimal prefix codes from symbol frequencies, greedy tree-merging algorithm",
+      "aliases": [
+        "huffman", "huffman coding", "huffman encoding", "huffman tree", "huffman code",
+        "optimal prefix code", "prefix free code", "variable length encoding",
+        "entropy encoding tree", "minimum expected code length"
+      ]
+    },
+    {
+      "id": "fractional_knapsack",
+      "file": "fractional_knapsack.md",
+      "category": "greedy",
+      "description": "Fractional knapsack: greedy solution sorting by value/weight ratio, items divisible",
+      "aliases": [
+        "fractional knapsack", "fraction knapsack", "knapsack fractional",
+        "greedy knapsack", "value weight ratio knapsack", "divisible items knapsack",
+        "knapsack"
+      ]
+    },
+    {
+      "id": "divide_and_conquer_overview",
+      "file": "divide_and_conquer_overview.md",
+      "category": "divide_and_conquer",
+      "description": "General idea of divide and conquer: divide/conquer/combine, recurrences, Master theorem",
+      "aliases": [
+        "divide and conquer", "divide & conquer", "divide-and-conquer", "d and c algorithm",
+        "master theorem", "recurrence relation algorithm", "general divide and conquer idea",
+        "what is divide and conquer"
+      ]
+    },
+    {
+      "id": "maximum_subarray_dc",
+      "file": "maximum_subarray_dc.md",
+      "category": "divide_and_conquer",
+      "description": "Maximum subarray sum: divide-and-conquer solution (crossing subarray), plus Kadane's algorithm for comparison",
+      "aliases": [
+        "maximum subarray", "max subarray", "maximum subarray sum", "largest sum contiguous subarray",
+        "maximum contiguous sum", "crossing subarray", "kadane", "kadane's algorithm", "kadanes algorithm"
+      ]
+    },
+    {
+      "id": "quicksort",
+      "file": "quicksort.md",
+      "category": "divide_and_conquer",
+      "description": "QuickSort: in-place partition-based divide-and-conquer sort, Lomuto partition scheme",
+      "aliases": [
+        "quick sort", "quicksort", "quick-sort", "lomuto partition", "hoare partition",
+        "partition based sort", "pivot sort"
+      ]
+    },
+    {
+      "id": "mergesort",
+      "file": "mergesort.md",
+      "category": "divide_and_conquer",
+      "description": "MergeSort: divide-and-conquer sort with guaranteed O(n log n), merge step",
+      "aliases": [
+        "merge sort", "mergesort", "merge-sort", "merging sorted arrays", "stable sort merge"
+      ]
+    },
+    {
+      "id": "assembly_line_scheduling",
+      "file": "assembly_line_scheduling.md",
+      "category": "dynamic_programming",
+      "description": "Assembly line scheduling: dynamic programming across two parallel lines with transfer costs",
+      "aliases": [
+        "assembly line scheduling", "assembly line programming", "assembly line problem",
+        "assembly line dp", "two assembly lines", "station scheduling", "car chassis assembly line"
+      ]
+    }
+  ]
+}
