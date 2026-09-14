@@ -130,7 +130,8 @@ echo "$COMPONENTS" | grep -q "agy-cli" && bash "$SCRIPT_DIR/components/agy-cli.s
 # --- Deploy the runtime scripts + RAG corpus + config into $TARGET ----------
 echo "== Deploying runtime scripts, RAG corpus, and config =="
 cp -r "$SCRIPT_DIR/runtime/." "$TARGET/"
-cp -r "$SCRIPT_DIR/rag" "$TARGET/rag"
+mkdir -p "$TARGET/rag"
+cp -r "$SCRIPT_DIR/rag/." "$TARGET/rag/"
 mkdir -p "$TARGET/config"
 cp "$SCRIPT_DIR/config/models.json" "$TARGET/config/models.json"
 chmod +x "$TARGET"/*.sh 2>/dev/null || true

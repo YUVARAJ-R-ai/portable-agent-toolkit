@@ -41,6 +41,8 @@ TOPICS_DIR="$RAG_DIR/topics"
 
 if [ -x "$SCRIPT_DIR/bin/jq" ]; then
   JQ_BIN="$SCRIPT_DIR/bin/jq"
+elif [ -n "$(find "$SCRIPT_DIR/bin" -maxdepth 1 -name "jq*" -type f 2>/dev/null | head -1)" ]; then
+  JQ_BIN="$(find "$SCRIPT_DIR/bin" -maxdepth 1 -name "jq*" -type f 2>/dev/null | head -1)"
 elif command -v jq >/dev/null 2>&1; then
   JQ_BIN="$(command -v jq)"
 else

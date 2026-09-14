@@ -17,17 +17,44 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/common.sh"
 
 TARGET="$1"
-if [ -z "$TARGET" ] || [ ! -f "$TARGET/.versions.json" ]; then
+if [ -z "$TARGET" ] || [ ! -d "$TARGET" ]; then
   echo "Usage: bash update.sh <target_dir>" >&2
-  echo "(<target_dir> must be a directory previously set up by install.sh --" >&2
-  echo " no .versions.json manifest found there)" >&2
+  echo "(<target_dir> must be an existing directory containing a portable agent install)" >&2
   exit 1
 fi
 
 JQ="$TARGET/bin/jq"
+if [ ! -x "$JQ" ]; then
+  JQ="$(find "$TARGET/bin" -maxdepth 1 -name "jq*" -type f 2>/dev/null | head -1)"
+  [ -z "$JQ" ] && command -v jq >/dev/null 2>&1 && JQ="$(command -v jq)"
+fi
+
 GUM="$TARGET/bin/gum"
-MANIFEST="$(cat "$TARGET/.versions.json")"
-COMPONENTS="$(echo "$MANIFEST" | "$JQ" -r '.components')"
+if [ ! -x "$GUM" ]; then
+  GUM="$(find "$TARGET/bin" -maxdepth 1 -name "gum*" -type f 2>/dev/null | head -1)"
+  [ -z "$GUM" ] && command -v gum >/dev/null 2>&1 && GUM="$(command -v gum)"
+fi
+
+if [ -f "$TARGET/.versions.json" ]; then
+  MANIFEST="$(cat "$TARGET/.versions.json")"
+else
+  DETECTED_COMPONENTS="core"
+  [ -d "$TARGET/dev" ] && DETECTED_COMPONENTS="$DETECTED_COMPONENTS dev"
+  ([ -d "$TARGET/claude-code" ] || [ -f "$TARGET/bin/claude-code" ]) && DETECTED_COMPONENTS="$DETECTED_COMPONENTS claude-code"
+  ([ -d "$TARGET/agy-cli" ] || [ -f "$TARGET/bin/agy" ]) && DETECTED_COMPONENTS="$DETECTED_COMPONENTS agy-cli"
+  MANIFEST="$(cat <<EOF
+{
+  "installed_at": "unknown",
+  "versions": {},
+  "components": "$DETECTED_COMPONENTS",
+  "models": []
+}
+EOF
+)"
+fi
+
+COMPONENTS="$(echo "$MANIFEST" | "$JQ" -r '.components // empty')"
+[ -z "$COMPONENTS" ] && COMPONENTS="core"
 
 echo "Checking for updates ..."
 
@@ -81,10 +108,16 @@ echo "$COMPONENTS" | grep -q "dev" && CHOICES+=("Dev environment (zig, rust, nod
 echo "$COMPONENTS" | grep -q "claude-code" && CHOICES+=("Claude Code")
 echo "$COMPONENTS" | grep -q "agy-cli" && CHOICES+=("Agy CLI")
 
-SELECTED="$("$GUM" choose --no-limit \
-  --header "Select components to update/refresh (space to toggle, enter to confirm):" \
-  --cursor.foreground 212 --selected.foreground 212 \
-  "${CHOICES[@]}")"
+if [ -n "${UPDATE_COMPONENTS:-}" ]; then
+  SELECTED="$UPDATE_COMPONENTS"
+elif [ ! -t 0 ] || [ -z "$GUM" ] || [ ! -x "$GUM" ]; then
+  SELECTED="Runtime scripts & RAG corpus (refresh from toolkit repo)"
+else
+  SELECTED="$("$GUM" choose --no-limit \
+    --header "Select components to update/refresh (space to toggle, enter to confirm):" \
+    --cursor.foreground 212 --selected.foreground 212 \
+    "${CHOICES[@]}")"
+fi
 
 if [ -z "$SELECTED" ]; then
   echo "Nothing selected — no changes made."
@@ -94,10 +127,25 @@ fi
 echo "$SELECTED" | grep -q "Runtime scripts" && {
   echo "== Refreshing runtime scripts, RAG corpus, and config =="
   cp -r "$SCRIPT_DIR/runtime/." "$TARGET/"
-  cp -r "$SCRIPT_DIR/rag" "$TARGET/rag"
+  mkdir -p "$TARGET/rag"
+  cp -r "$SCRIPT_DIR/rag/." "$TARGET/rag/"
   mkdir -p "$TARGET/config"
   cp "$SCRIPT_DIR/config/models.json" "$TARGET/config/models.json"
   chmod +x "$TARGET"/*.sh 2>/dev/null || true
+
+  for b in koboldcpp goose gum jq; do
+    if [ ! -f "$TARGET/bin/$b" ]; then
+      cand="$(find "$TARGET/bin" -maxdepth 1 -name "${b}*" -type f 2>/dev/null | head -1)"
+      if [ -n "$cand" ] && [ "$cand" != "$TARGET/bin/$b" ]; then
+        cand_base="$(basename "$cand")"
+        cat <<EOF > "$TARGET/bin/$b"
+#!/usr/bin/env bash
+exec "\$(dirname "\$0")/$cand_base" "\$@"
+EOF
+        chmod +x "$TARGET/bin/$b"
+      fi
+    fi
+  done
 }
 echo "$SELECTED" | grep -q "Core agent stack" && bash "$SCRIPT_DIR/components/core-agent-stack.sh" "$TARGET"
 echo "$SELECTED" | grep -q "Dev environment" && bash "$SCRIPT_DIR/components/dev-environment.sh" "$TARGET"

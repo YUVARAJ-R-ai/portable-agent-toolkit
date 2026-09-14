@@ -25,9 +25,13 @@ case "$OS" in
           [ -n "$VULKAN" ] && GPU_FLAGS="--usevulkan" ;;
 esac
 KOBOLD_BIN="$BIN_DIR/koboldcpp"
+[ ! -x "$KOBOLD_BIN" ] && KOBOLD_BIN="$(find "$BIN_DIR" -maxdepth 1 -name "koboldcpp*" -type f 2>/dev/null | head -1)"
 OPENCODE_BIN="$BIN_DIR/opencode"
+[ ! -x "$OPENCODE_BIN" ] && OPENCODE_BIN="$(find "$BIN_DIR" -maxdepth 1 -name "opencode*" -type f 2>/dev/null | head -1)"
 GOOSE_BIN="$BIN_DIR/goose"
+[ ! -x "$GOOSE_BIN" ] && GOOSE_BIN="$(find "$BIN_DIR" -maxdepth 1 -name "goose*" -type f 2>/dev/null | head -1)"
 GUM_BIN="$BIN_DIR/gum"
+[ ! -x "$GUM_BIN" ] && GUM_BIN="$(find "$BIN_DIR" -maxdepth 1 -name "gum*" -type f 2>/dev/null | head -1)"
 
 # koboldcpp's own thread auto-detect commonly under-uses multi-core/SMT CPUs
 # -- physical core count (not the full logical/SMT count) is the right
