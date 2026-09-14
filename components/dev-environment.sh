@@ -32,8 +32,10 @@ install_zig() {
   echo "== Zig (C/C++) =="
   local plat
   case "$OS-$ARCH" in
-    linux-x64) plat="x86_64-linux" ;;
-    mac-arm64) plat="aarch64-macos" ;;
+    linux-x64)   plat="x86_64-linux" ;;
+    linux-arm64) plat="aarch64-linux" ;;
+    mac-arm64)   plat="aarch64-macos" ;;
+    mac-x64)     plat="x86_64-macos" ;;
     *) echo "No Zig build for $OS-$ARCH" >&2; return 1 ;;
   esac
   local json version url sha
@@ -62,8 +64,10 @@ install_rust() {
   echo "== Rust (rustc + cargo, no rustup) =="
   local triple
   case "$OS-$ARCH" in
-    linux-x64) triple="x86_64-unknown-linux-gnu" ;;
-    mac-arm64) triple="aarch64-apple-darwin" ;;
+    linux-x64)   triple="x86_64-unknown-linux-gnu" ;;
+    linux-arm64) triple="aarch64-unknown-linux-gnu" ;;
+    mac-arm64)   triple="aarch64-apple-darwin" ;;
+    mac-x64)     triple="x86_64-apple-darwin" ;;
     *) echo "No Rust build for $OS-$ARCH" >&2; return 1 ;;
   esac
   local toml url sha version
@@ -107,8 +111,10 @@ install_node() {
   echo "== Node.js + npm (React via 'npm create vite@latest') =="
   local plat
   case "$OS-$ARCH" in
-    linux-x64) plat="linux-x64" ;;
-    mac-arm64) plat="darwin-arm64" ;;
+    linux-x64)   plat="linux-x64" ;;
+    linux-arm64) plat="linux-arm64" ;;
+    mac-arm64)   plat="darwin-arm64" ;;
+    mac-x64)     plat="darwin-x64" ;;
     *) echo "No Node build for $OS-$ARCH" >&2; return 1 ;;
   esac
   local version
@@ -132,8 +138,10 @@ install_python() {
   echo "== Python (python-build-standalone) =="
   local triple
   case "$OS-$ARCH" in
-    linux-x64) triple="x86_64-unknown-linux-gnu" ;;
-    mac-arm64) triple="aarch64-apple-darwin" ;;
+    linux-x64)   triple="x86_64-unknown-linux-gnu" ;;
+    linux-arm64) triple="aarch64-unknown-linux-gnu" ;;
+    mac-arm64)   triple="aarch64-apple-darwin" ;;
+    mac-x64)     triple="x86_64-apple-darwin" ;;
     *) echo "No Python build for $OS-$ARCH" >&2; return 1 ;;
   esac
   local release fname url

@@ -21,7 +21,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=../lib/common.sh
 source "$SCRIPT_DIR/../lib/common.sh"
 
-JQ_BIN="${JQ_BIN:-jq}"
+if [ -z "$JQ_BIN" ] || ! command -v "$JQ_BIN" >/dev/null 2>&1; then
+  if [ -x "$TARGET/bin/jq" ]; then
+    JQ_BIN="$TARGET/bin/jq"
+  else
+    JQ_BIN="jq"
+  fi
+fi
 mkdir -p "$TARGET/models"
 
 for id in "${MODEL_IDS[@]}"; do

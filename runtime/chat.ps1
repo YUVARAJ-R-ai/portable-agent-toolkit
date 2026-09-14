@@ -74,6 +74,9 @@ try {
         if ($line -eq "exit" -or $line -eq "quit") { break }
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         $history += [PSCustomObject]@{ role = "user"; content = $line }
+        if ($history.Count -gt 20) {
+            $history = $history[-20..-1]
+        }
         $body = @{ model = "local"; messages = $history; stream = $false } | ConvertTo-Json -Depth 10
         $response = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/v1/chat/completions" -Method Post -Body $body -ContentType "application/json"
         $reply = $response.choices[0].message.content
@@ -85,6 +88,6 @@ try {
 } finally {
     if ($startedKobold -and $koboldProc -and -not $koboldProc.HasExited) {
         Write-Host "Stopping koboldcpp (pid $($koboldProc.Id)) ..."
-        & taskkill /PID $koboldProc.Id /T /F 2>$null | Out-Null
+        & taskkill /PID $koboldProc.Id /T /F 2>&1 | Out-Null
     }
 }

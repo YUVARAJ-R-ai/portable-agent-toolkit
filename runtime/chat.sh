@@ -109,6 +109,6 @@ while true; do
 
   printf "\nAssistant: %s\n" "$REPLY"
 
-  "$JQ_BIN" --arg content "$REPLY" '. + [{"role":"assistant","content":$content}]' "$HISTORY_FILE" > "$HISTORY_FILE.tmp"
+  "$JQ_BIN" --arg content "$REPLY" '. + [{"role":"assistant","content":$content}] | if length > 20 then .[-20:] else . end' "$HISTORY_FILE" > "$HISTORY_FILE.tmp"
   mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"
 done

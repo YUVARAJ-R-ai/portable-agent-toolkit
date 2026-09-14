@@ -9,8 +9,9 @@
 ├── switch-model.sh / .ps1 / .bat         # hot-swap the running model
 ├── rag-search.sh / .ps1 / .bat           # DAA algorithm RAG lookup
 ├── claude-code.sh / .ps1 / .bat          # (optional) real Claude Code CLI
+├── agy-cli.sh / .ps1 / .bat              # (optional) portable Antigravity CLI
 ├── dev.sh / dev.bat                       # (optional) portable dev-env shell
-├── bin/                                    # koboldcpp, opencode, goose, gum, jq[, claude-code]
+├── bin/                                    # koboldcpp, opencode, goose, gum, jq[, claude-code, agy]
 ├── models/                                 # downloaded GGUF files
 ├── dev/                                    # (optional) zig/ rust/ node/ python/
 ├── rag/                                    # index.json + topic markdown files
@@ -20,7 +21,10 @@
 │   ├── AGENTS.md                           # auto-loaded by both OpenCode and Goose
 │   └── opencode.json                       # points OpenCode at the local koboldcpp endpoint
 ├── claude-code/                            # (optional) config/ + workspace/ + token.txt
+├── agy-cli/                                # (optional) home/ + workspace/
 ├── goose-config/                           # Goose's config root, kept off your real home dir
+├── opencode-config/                        # OpenCode's config root, kept off your real home dir
+├── opencode-data/                          # OpenCode's local data/session storage
 └── .versions.json                          # what update.sh compares against
 ```
 

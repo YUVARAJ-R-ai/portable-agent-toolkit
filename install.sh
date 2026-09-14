@@ -48,21 +48,28 @@ echo "Installing into: $TARGET"
 
 GUM_BIN="$(ensure_gum "$TARGET")"
 JQ_BIN="$(ensure_jq "$TARGET")"
+export JQ_BIN="$TARGET/bin/jq"
 
 # --- Component selection ----------------------------------------------------
 if [ -z "$COMPONENTS" ]; then
-  "$GUM_BIN" style --border rounded --padding "0 2" --margin "1 0" \
-    --border-foreground 212 --foreground 212 \
-    "Portable Agent Toolkit — Installer"
-  echo "Core AI-agent stack (koboldcpp + OpenCode + Goose + RAG) is always installed."
-  SELECTED="$("$GUM_BIN" choose --no-limit \
-    --header "Select optional components (space to toggle, enter to confirm):" \
-    --cursor.foreground 212 --selected.foreground 212 \
-    "Dev environment (C/C++, Rust, Node.js/React, Python)" \
-    "Claude Code (needs your own Anthropic subscription)")"
-  COMPONENTS="core"
-  echo "$SELECTED" | grep -q "Dev environment" && COMPONENTS="$COMPONENTS,dev"
-  echo "$SELECTED" | grep -q "Claude Code" && COMPONENTS="$COMPONENTS,claude-code"
+  if [ "$ASSUME_YES" = "1" ]; then
+    COMPONENTS="core"
+  else
+    "$GUM_BIN" style --border rounded --padding "0 2" --margin "1 0" \
+      --border-foreground 212 --foreground 212 \
+      "Portable Agent Toolkit — Installer"
+    echo "Core AI-agent stack (koboldcpp + OpenCode + Goose + RAG) is always installed."
+    SELECTED="$("$GUM_BIN" choose --no-limit \
+      --header "Select optional components (space to toggle, enter to confirm):" \
+      --cursor.foreground 212 --selected.foreground 212 \
+      "Dev environment (C/C++, Rust, Node.js/React, Python)" \
+      "Claude Code (needs your own Anthropic subscription)" \
+      "Agy CLI (Antigravity CLI)")"
+    COMPONENTS="core"
+    echo "$SELECTED" | grep -q "Dev environment" && COMPONENTS="$COMPONENTS,dev"
+    echo "$SELECTED" | grep -q "Claude Code" && COMPONENTS="$COMPONENTS,claude-code"
+    echo "$SELECTED" | grep -q "Agy CLI" && COMPONENTS="$COMPONENTS,agy-cli"
+  fi
 fi
 echo "Components: $COMPONENTS"
 
@@ -84,18 +91,27 @@ if [ -z "$MODELS" ]; then
 
   RAM="$(total_ram_gb)"
   echo "Detected system RAM: ~${RAM}GB"
-  SELECTED_MODELS="$("$GUM_BIN" choose --no-limit \
-    --header "Select model(s) to download (space to toggle, enter to confirm):" \
-    --selected "$DEFAULT_LABEL" \
-    --cursor.foreground 212 --selected.foreground 212 \
-    "${MODEL_LABELS[@]}")"
+  if [ "$ASSUME_YES" = "1" ]; then
+    for i in "${!MODEL_LABELS[@]}"; do
+      if [ "${MODEL_LABELS[$i]}" = "$DEFAULT_LABEL" ]; then
+        MODELS="${MODEL_IDS[$i]}"
+      fi
+    done
+    [ -z "$MODELS" ] && MODELS="${MODEL_IDS[0]}"
+  else
+    SELECTED_MODELS="$("$GUM_BIN" choose --no-limit \
+      --header "Select model(s) to download (space to toggle, enter to confirm):" \
+      --selected "$DEFAULT_LABEL" \
+      --cursor.foreground 212 --selected.foreground 212 \
+      "${MODEL_LABELS[@]}")"
 
-  MODELS=""
-  for i in "${!MODEL_LABELS[@]}"; do
-    if echo "$SELECTED_MODELS" | grep -qF "${MODEL_LABELS[$i]}"; then
-      MODELS="${MODELS:+$MODELS,}${MODEL_IDS[$i]}"
-    fi
-  done
+    MODELS=""
+    for i in "${!MODEL_LABELS[@]}"; do
+      if echo "$SELECTED_MODELS" | grep -qF "${MODEL_LABELS[$i]}"; then
+        MODELS="${MODELS:+$MODELS,}${MODEL_IDS[$i]}"
+      fi
+    done
+  fi
 fi
 echo "Models: ${MODELS:-none}"
 
@@ -109,6 +125,7 @@ fi
 
 echo "$COMPONENTS" | grep -q "dev" && bash "$SCRIPT_DIR/components/dev-environment.sh" "$TARGET"
 echo "$COMPONENTS" | grep -q "claude-code" && bash "$SCRIPT_DIR/components/claude-code.sh" "$TARGET"
+echo "$COMPONENTS" | grep -q "agy-cli" && bash "$SCRIPT_DIR/components/agy-cli.sh" "$TARGET"
 
 # --- Deploy the runtime scripts + RAG corpus + config into $TARGET ----------
 echo "== Deploying runtime scripts, RAG corpus, and config =="
@@ -126,9 +143,10 @@ chmod +x "$TARGET"/*.sh 2>/dev/null || true
   --arg goose "$("$TARGET/bin/goose" --version 2>/dev/null | head -1)" \
   --arg gum "$("$TARGET/bin/gum" --version 2>/dev/null | head -1)" \
   --arg jq "$("$TARGET/bin/jq" --version 2>/dev/null | head -1)" \
+  --arg agy "$([ -x "$TARGET/bin/agy" ] && "$TARGET/bin/agy" --version 2>/dev/null | head -1 || echo "")" \
   --arg components "$COMPONENTS" \
   --arg models "$MODELS" \
-  '{installed_at: $installed_at, versions: {koboldcpp: $koboldcpp, opencode: $opencode, goose: $goose, gum: $gum, jq: $jq}, components: $components, models: $models}' \
+  '{installed_at: $installed_at, versions: {koboldcpp: $koboldcpp, opencode: $opencode, goose: $goose, gum: $gum, jq: $jq, agy: $agy}, components: $components, models: $models}' \
   > "$TARGET/.versions.json"
 
 "$GUM_BIN" style --border rounded --padding "0 2" --margin "1 0" \
@@ -143,5 +161,6 @@ echo "  bash start.sh                 # koboldcpp + pick a model + pick OpenCode
 echo "  bash chat.sh                  # plain terminal chat, no orchestrator"
 echo "$COMPONENTS" | grep -q "dev" && echo "  bash dev.sh                    # enter the portable C/C++/Rust/Node/Python shell"
 echo "$COMPONENTS" | grep -q "claude-code" && echo "  bash claude-code.sh            # real Claude Code CLI (needs 'claude-code setup-token' once)"
+echo "$COMPONENTS" | grep -q "agy-cli" && echo "  bash agy-cli.sh                # portable Agy CLI"
 echo
 echo "To update components later: bash update.sh (from wherever you keep this repo checked out)"

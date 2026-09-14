@@ -22,6 +22,9 @@ export PATH="$DEV_DIR/zig:$DEV_DIR/rust/bin:$DEV_DIR/node/bin:$DEV_DIR/python/bi
 # `cargo build` works with no system C compiler at all.
 export CARGO_HOME="$DEV_DIR/rust"
 export RUSTUP_HOME="$DEV_DIR/rust"
+export npm_config_cache="$DEV_DIR/node/cache"
+export PIP_CACHE_DIR="$DEV_DIR/python/cache"
+mkdir -p "$DEV_DIR/node/cache" "$DEV_DIR/python/cache"
 
 echo "Portable dev environment active. Available:"
 [ -x "$DEV_DIR/zig/zig" ]           && echo "  zig     $("$DEV_DIR/zig/zig" version)  (zig cc / zig c++ for C and C++)"

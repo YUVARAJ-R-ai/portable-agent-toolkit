@@ -51,24 +51,38 @@ CHECK_ONE() {
 }
 
 UPDATES_AVAILABLE=0
-CHECK_ONE "koboldcpp" "LostRuins/koboldcpp" "$(echo "$MANIFEST" | "$JQ" -r '.versions.koboldcpp')"
-CHECK_ONE "opencode"  "sst/opencode"        "$(echo "$MANIFEST" | "$JQ" -r '.versions.opencode')"
-CHECK_ONE "goose"     "block/goose"         "$(echo "$MANIFEST" | "$JQ" -r '.versions.goose')"
-CHECK_ONE "gum"       "charmbracelet/gum"   "$(echo "$MANIFEST" | "$JQ" -r '.versions.gum')"
-CHECK_ONE "jq"        "jqlang/jq"           "$(echo "$MANIFEST" | "$JQ" -r '.versions.jq')"
+CHECK_ONE "koboldcpp" "LostRuins/koboldcpp" "$(echo "$MANIFEST" | "$JQ" -r '.versions.koboldcpp // empty')"
+CHECK_ONE "opencode"  "sst/opencode"        "$(echo "$MANIFEST" | "$JQ" -r '.versions.opencode // empty')"
+CHECK_ONE "goose"     "block/goose"         "$(echo "$MANIFEST" | "$JQ" -r '.versions.goose // empty')"
+CHECK_ONE "gum"       "charmbracelet/gum"   "$(echo "$MANIFEST" | "$JQ" -r '.versions.gum // empty')"
+CHECK_ONE "jq"        "jqlang/jq"           "$(echo "$MANIFEST" | "$JQ" -r '.versions.jq // empty')"
+
+if echo "$COMPONENTS" | grep -q "claude-code"; then
+  CC_LATEST="$(curl -fsSL https://downloads.claude.ai/claude-code-releases/latest 2>/dev/null || true)"
+  CC_INSTALLED="$("$TARGET/bin/claude-code" --version 2>/dev/null | head -1 || true)"
+  if [ -n "$CC_LATEST" ]; then
+    if [ -n "$CC_INSTALLED" ] && echo "$CC_INSTALLED" | grep -qF "$CC_LATEST"; then
+      echo "  claude-code: up to date ($CC_INSTALLED)"
+    else
+      echo "  claude-code: UPDATE AVAILABLE  installed=[${CC_INSTALLED:-unknown}]  latest=[$CC_LATEST]"
+      UPDATES_AVAILABLE=1
+    fi
+  fi
+fi
 
 if [ "$UPDATES_AVAILABLE" = "0" ]; then
-  echo "Everything is up to date."
-  exit 0
+  echo "Core components appear up to date."
 fi
 
 echo
-CHOICES=("Core agent stack (koboldcpp, OpenCode, Goose, gum, jq)")
+CHOICES=("Runtime scripts & RAG corpus (refresh from toolkit repo)")
+CHOICES+=("Core agent stack (koboldcpp, OpenCode, Goose, gum, jq)")
 echo "$COMPONENTS" | grep -q "dev" && CHOICES+=("Dev environment (zig, rust, node, python)")
 echo "$COMPONENTS" | grep -q "claude-code" && CHOICES+=("Claude Code")
+echo "$COMPONENTS" | grep -q "agy-cli" && CHOICES+=("Agy CLI")
 
 SELECTED="$("$GUM" choose --no-limit \
-  --header "Select components to update:" \
+  --header "Select components to update/refresh (space to toggle, enter to confirm):" \
   --cursor.foreground 212 --selected.foreground 212 \
   "${CHOICES[@]}")"
 
@@ -77,9 +91,18 @@ if [ -z "$SELECTED" ]; then
   exit 0
 fi
 
+echo "$SELECTED" | grep -q "Runtime scripts" && {
+  echo "== Refreshing runtime scripts, RAG corpus, and config =="
+  cp -r "$SCRIPT_DIR/runtime/." "$TARGET/"
+  cp -r "$SCRIPT_DIR/rag" "$TARGET/rag"
+  mkdir -p "$TARGET/config"
+  cp "$SCRIPT_DIR/config/models.json" "$TARGET/config/models.json"
+  chmod +x "$TARGET"/*.sh 2>/dev/null || true
+}
 echo "$SELECTED" | grep -q "Core agent stack" && bash "$SCRIPT_DIR/components/core-agent-stack.sh" "$TARGET"
 echo "$SELECTED" | grep -q "Dev environment" && bash "$SCRIPT_DIR/components/dev-environment.sh" "$TARGET"
 echo "$SELECTED" | grep -q "Claude Code" && bash "$SCRIPT_DIR/components/claude-code.sh" "$TARGET"
+echo "$SELECTED" | grep -q "Agy CLI" && bash "$SCRIPT_DIR/components/agy-cli.sh" "$TARGET"
 
 # refresh the manifest
 "$JQ" -n \
@@ -89,9 +112,10 @@ echo "$SELECTED" | grep -q "Claude Code" && bash "$SCRIPT_DIR/components/claude-
   --arg goose "$("$TARGET/bin/goose" --version 2>/dev/null | head -1)" \
   --arg gum "$("$TARGET/bin/gum" --version 2>/dev/null | head -1)" \
   --arg jq "$("$TARGET/bin/jq" --version 2>/dev/null | head -1)" \
+  --arg agy "$([ -x "$TARGET/bin/agy" ] && "$TARGET/bin/agy" --version 2>/dev/null | head -1 || echo "")" \
   --arg components "$COMPONENTS" \
   --arg models "$(echo "$MANIFEST" | "$JQ" -r '.models')" \
-  '{installed_at: $installed_at, versions: {koboldcpp: $koboldcpp, opencode: $opencode, goose: $goose, gum: $gum, jq: $jq}, components: $components, models: $models}' \
+  '{installed_at: $installed_at, versions: {koboldcpp: $koboldcpp, opencode: $opencode, goose: $goose, gum: $gum, jq: $jq, agy: $agy}, components: $components, models: $models}' \
   > "$TARGET/.versions.json"
 
 echo "Update complete."

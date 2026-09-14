@@ -22,9 +22,10 @@ source "$SCRIPT_DIR/../lib/common.sh"
 OS="$(detect_os)"
 ARCH="$(detect_arch)"
 case "$OS-$ARCH" in
-  linux-x64)  PLATFORM="linux-x64" ;;
-  mac-arm64)  PLATFORM="darwin-arm64" ;;
-  mac-x64)    PLATFORM="darwin-x64" ;;
+  linux-x64)   PLATFORM="linux-x64" ;;
+  linux-arm64) PLATFORM="linux-arm64" ;;
+  mac-arm64)   PLATFORM="darwin-arm64" ;;
+  mac-x64)     PLATFORM="darwin-x64" ;;
   *) echo "No Claude Code build for $OS-$ARCH" >&2; exit 1 ;;
 esac
 

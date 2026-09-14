@@ -51,7 +51,7 @@ function Install-Rust {
     Get-ChildItem $tmp -Directory | ForEach-Object {
         Get-ChildItem $_.FullName -Directory | ForEach-Object {
             $componentDir = Join-Path $_.FullName ""
-            if (Test-Path (Join-Path $_.FullName "bin")) {
+            if ((Test-Path (Join-Path $_.FullName "bin")) -or (Test-Path (Join-Path $_.FullName "lib"))) {
                 Copy-Item (Join-Path $_.FullName "*") $rustDir -Recurse -Force
             }
         }

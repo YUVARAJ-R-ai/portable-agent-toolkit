@@ -61,7 +61,7 @@
       "description": "QuickSort: in-place partition-based divide-and-conquer sort, Lomuto partition scheme",
       "aliases": [
         "quick sort", "quicksort", "quick-sort", "lomuto partition", "hoare partition",
-        "partition based sort", "pivot sort"
+        "partition based sort", "pivot sort", "sort", "sorting", "fast sort", "sort fast"
       ]
     },
     {
@@ -70,7 +70,8 @@
       "category": "divide_and_conquer",
       "description": "MergeSort: divide-and-conquer sort with guaranteed O(n log n), merge step",
       "aliases": [
-        "merge sort", "mergesort", "merge-sort", "merging sorted arrays", "stable sort merge"
+        "merge sort", "mergesort", "merge-sort", "merging sorted arrays", "stable sort merge",
+        "sort", "sorting", "fast sort", "sort fast"
       ]
     },
     {
@@ -81,6 +82,140 @@
       "aliases": [
         "assembly line scheduling", "assembly line programming", "assembly line problem",
         "assembly line dp", "two assembly lines", "station scheduling", "car chassis assembly line"
+      ]
+    },
+    {
+      "id": "n_queens_backtracking",
+      "file": "n_queens_backtracking.md",
+      "category": "backtracking",
+      "description": "N-Queens backtracking: O(1) diagonal conflict lookup, Obstacle cells, Amazon/Super-Queens (Knight attack), Max-Weight B&B pruning, Pre-Fixed Queens, No Three Queens Collinear, K-Queens on N x M",
+      "aliases": [
+        "n queens", "n-queens", "nqueens", "backtracking n queens", "n queens backtracking",
+        "eight queens", "8 queens", "four queens", "4 queens",
+        "n queens with obstacles", "damaged solar panels", "defective node matrix", "obstacle queens", "blocked cells queens",
+        "amazon queens", "super queens", "queen knight attack", "amazon super-queens", "radar transmitter queen",
+        "max weight n queens", "weighted board queen", "max profit queens", "branch and bound n queens", "harvested solar power",
+        "pre-fixed queens", "fixed queens", "partial hardware placement", "cryptographic engines",
+        "no three queens collinear", "collinear queens", "cross product collinear", "general linear independence queens",
+        "k queens", "k-queens", "k queens on n x m", "k queens grid", "non-interfering satellites", "non-interfering drones"
+      ]
+    },
+    {
+      "id": "job_selection_deadlines_profits",
+      "file": "job_selection_deadlines_profits.md",
+      "category": "branch_and_bound",
+      "description": "Job Selection with Deadlines and Profits (Branch & Bound): canonical single-machine, optimistic upper bound, Variable Durations knapsack relaxation, Rejection Penalties effective profit, Release Times [r_i, d_i]",
+      "aliases": [
+        "job selection", "job selection with deadlines and profits", "job sequencing with deadlines", "deadline scheduling",
+        "profit deadline branch and bound", "job selection b&b", "emergency medical drop-offs", "satellite missions", "unit deadlines",
+        "variable duration jobs", "job selection variable processing time", "knapsack scheduling hybrid", "multi-unit duration jobs",
+        "job selection rejection penalties", "rejection penalties", "late fines", "effective profit", "delay fine",
+        "job selection release times", "release times and deadlines", "release windows", "optimistic upper bound job selection"
+      ]
+    },
+    {
+      "id": "job_assignment_lcbb",
+      "file": "job_assignment_lcbb.md",
+      "category": "branch_and_bound",
+      "description": "Job Assignment Problem via Least Cost Branch and Bound (LCBB): N workers to N jobs cost matrix, row-reduction lower bound, min-heap priority queue",
+      "aliases": [
+        "job assignment", "job assignment problem", "job assignment lcbb", "least cost branch and bound",
+        "assignment problem lcbb", "n workers n jobs", "worker job cost matrix",
+        "lcbb assignment", "assignment lower bound", "row reduction lower bound", "min cost job assignment"
+      ]
+    },
+    {
+      "id": "naive_string_matching",
+      "file": "naive_string_matching.md",
+      "category": "string_matching",
+      "description": "Naïve string matching: sliding window comparison, wildcard '?' matching, no adjacent duplicate matched characters filter",
+      "aliases": [
+        "naive string matching", "naive pattern matching", "brute force string matching", "naive string search",
+        "wildcard string matching", "question mark wildcard matching", "no two consecutive matched characters identical",
+        "no adjacent duplicates matching"
+      ]
+    },
+    {
+      "id": "kmp_string_matching",
+      "file": "kmp_string_matching.md",
+      "category": "string_matching",
+      "description": "Knuth-Morris-Pratt (KMP) string matching: LPS / prefix function pi array, linear O(n+m) search, periodic string detection, non-overlapping matches, cyclic shift rotation",
+      "aliases": [
+        "kmp", "knuth morris pratt", "kmp algorithm", "kmp string matching", "kmp pattern matching",
+        "lps array", "prefix function", "pi array", "longest prefix suffix",
+        "periodic string", "periodic string detection", "repeating base substring", "repeating telemetry packet",
+        "periodic telemetry", "periodic telemetry packet", "telemetry packet", "repeating telemetry", "periodic signal", "cyclic repeated pattern",
+        "cyclic shift", "circular shift", "rotational equivalence", "circular rotation",
+        "longest palindromic prefix", "prefix palindrome", "non-overlapping matches"
+      ]
+    },
+    {
+      "id": "rabin_karp_string_matching",
+      "file": "rabin_karp_string_matching.md",
+      "category": "string_matching",
+      "description": "Rabin-Karp string matching: polynomial rolling hash with modulo arithmetic, base 256, collision verification, multiple pattern dictionary search",
+      "aliases": [
+        "rabin karp", "rabin-karp", "rabin karp algorithm", "rabin karp string matching",
+        "rolling hash", "polynomial rolling hash", "hash based string matching",
+        "multiple pattern search", "dictionary matching", "detect multiple signatures"
+      ]
+    },
+    {
+      "id": "suffix_array_lcp",
+      "file": "suffix_array_lcp.md",
+      "category": "string_matching",
+      "description": "Suffix Structures: Suffix Array + Kasai's O(n) LCP array, Longest Repeated Substring, Longest Common Substring of two strings, distinct substring count, Suffix Tree equivalence",
+      "aliases": [
+        "suffix array", "suffix tree", "suffix trees", "lcp array", "kasai algorithm", "kasai's algorithm",
+        "longest common prefix", "longest repeated substring", "deepest internal node", "deepest repeated signature",
+        "longest common substring", "longest common substring two strings", "generalized suffix tree",
+        "distinct substrings count", "count distinct substrings"
+      ]
+    },
+    {
+      "id": "mst_kruskal_prim",
+      "file": "mst_kruskal_prim.md",
+      "category": "graph_algorithms",
+      "description": "Minimum Spanning Tree (MST): Kruskal's algorithm with DSU (path compression + rank), Prim's algorithm with min-heap priority queue, Mandatory and Forbidden edges, Strictly Second Best MST",
+      "aliases": [
+        "mst", "minimum spanning tree", "kruskal", "kruskal's algorithm", "kruskals algorithm",
+        "prim", "prim's algorithm", "prims algorithm", "disjoint set union", "dsu mst",
+        "mandatory and forbidden edges", "mandatory fiber links", "mandatory fiber cables", "constrained mst", "compulsory edges mst",
+        "second best mst", "second minimum spanning tree", "strictly second best mst", "2nd mst", "backup network mst", "redundant backup network"
+      ]
+    },
+    {
+      "id": "floyd_warshall_apsp",
+      "file": "floyd_warshall_apsp.md",
+      "category": "graph_algorithms",
+      "description": "Floyd-Warshall All-Pairs Shortest Path (APSP): O(V^3) DP recurrence (outermost k loop), path reconstruction matrix, negative cycle detection (-INF marking), widest path / bottleneck capacity, transitive closure",
+      "aliases": [
+        "floyd warshall", "floyd-warshall", "floyd warshall algorithm", "floyd warshall apsp",
+        "all pairs shortest path floyd warshall", "apsp dynamic programming", "floyd warshall path reconstruction",
+        "floyd warshall negative cycle", "negative weight cycle floyd", "infinite gain loops",
+        "widest path", "maximum bottleneck capacity", "maximin dp", "transitive closure", "warshall reachability"
+      ]
+    },
+    {
+      "id": "johnson_apsp",
+      "file": "johnson_apsp.md",
+      "category": "graph_algorithms",
+      "description": "Johnson's Algorithm for All-Pairs Shortest Path: sparse graphs O(V^2 log V + VE), 5 execution steps, synthetic source, Bellman-Ford potential reweighting, V x Dijkstra",
+      "aliases": [
+        "johnson", "johnson's algorithm", "johnsons algorithm", "johnson apsp",
+        "all pairs shortest path sparse graph", "reweighting algorithm", "bellman ford potential",
+        "synthetic source reweighting", "johnson negative edges"
+      ]
+    },
+    {
+      "id": "pat2_twist_cheat_sheet",
+      "file": "pat2_twist_cheat_sheet.md",
+      "category": "exam_reference",
+      "description": "PAT-2 Master Complexity Matrix & Twist Detection Guide: 'Spot the Twist in 30 Seconds' keyword mapping, and Pre-Flight Zero-Mark Avoidance checklist",
+      "aliases": [
+        "cheat sheet", "pat2", "exam guide", "twist cheat sheet", "spot the twist", "twist detection", "pat2 cheat sheet", "pat2 guide",
+        "master complexity matrix", "complexity comparison", "exam keyword translation", "zero mark avoidance",
+        "pre-flight checklist", "twist detection guide", "pat2 master preparation guide"
       ]
     }
   ]

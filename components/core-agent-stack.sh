@@ -25,7 +25,8 @@ echo "== koboldcpp =="
 case "$OS-$ARCH" in
   linux-x64)  KOBOLD_ASSET="koboldcpp-linux-x64-nocuda" ;;
   mac-arm64)  KOBOLD_ASSET="koboldcpp-mac-arm64" ;;
-  *) echo "No koboldcpp build for $OS-$ARCH" >&2; exit 1 ;;
+  mac-x64)    KOBOLD_ASSET="koboldcpp-mac-arm64" ;; # Compatible via Rosetta 2 translation
+  *) echo "No official prebuilt koboldcpp binary for $OS-$ARCH. Please compile koboldcpp and copy to $TARGET/bin/koboldcpp." >&2; exit 1 ;;
 esac
 KOBOLD_URL="$(gh_asset_url "LostRuins/koboldcpp" "$KOBOLD_ASSET")"
 [ -z "$KOBOLD_URL" ] && { echo "Could not resolve koboldcpp download URL" >&2; exit 1; }
@@ -34,8 +35,10 @@ chmod +x "$TARGET/bin/koboldcpp"
 
 echo "== OpenCode =="
 case "$OS-$ARCH" in
-  linux-x64)  OC_ASSET="opencode-linux-x64.tar.gz" ;;
-  mac-arm64)  OC_ASSET="opencode-darwin-arm64.zip" ;;
+  linux-x64)   OC_ASSET="opencode-linux-x64.tar.gz" ;;
+  linux-arm64) OC_ASSET="opencode-linux-arm64.tar.gz" ;;
+  mac-arm64)   OC_ASSET="opencode-darwin-arm64.zip" ;;
+  mac-x64)     OC_ASSET="opencode-darwin-x64.zip" ;;
   *) echo "No OpenCode build for $OS-$ARCH" >&2; exit 1 ;;
 esac
 OC_URL="$(gh_asset_url "sst/opencode" "$OC_ASSET")"
@@ -52,8 +55,10 @@ rm -rf "$OC_TMP"
 
 echo "== Goose =="
 case "$OS-$ARCH" in
-  linux-x64)  GOOSE_ASSET="goose-x86_64-unknown-linux-gnu.tar.gz" ;;
-  mac-arm64)  GOOSE_ASSET="goose-aarch64-apple-darwin.tar.gz" ;;
+  linux-x64)   GOOSE_ASSET="goose-x86_64-unknown-linux-gnu.tar.gz" ;;
+  linux-arm64) GOOSE_ASSET="goose-aarch64-unknown-linux-gnu.tar.gz" ;;
+  mac-arm64)   GOOSE_ASSET="goose-aarch64-apple-darwin.tar.gz" ;;
+  mac-x64)     GOOSE_ASSET="goose-x86_64-apple-darwin.tar.gz" ;;
   *) echo "No Goose build for $OS-$ARCH" >&2; exit 1 ;;
 esac
 GOOSE_URL="$(gh_asset_url "block/goose" "$GOOSE_ASSET")"

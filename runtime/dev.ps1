@@ -12,6 +12,9 @@ if (-not (Test-Path $DevDir)) {
 $env:Path = "$DevDir\zig;$DevDir\rust\bin;$DevDir\node;$DevDir\python;$env:Path"
 $env:CARGO_HOME = Join-Path $DevDir "rust"
 $env:RUSTUP_HOME = Join-Path $DevDir "rust"
+$env:npm_config_cache = Join-Path $DevDir "node\cache"
+$env:PIP_CACHE_DIR = Join-Path $DevDir "python\cache"
+New-Item -ItemType Directory -Force -Path $env:npm_config_cache, $env:PIP_CACHE_DIR | Out-Null
 
 Write-Host "Portable dev environment active. Available:"
 if (Test-Path "$DevDir\zig\zig.exe") { Write-Host "  zig     $(& "$DevDir\zig\zig.exe" version)  (zig cc / zig c++ for C and C++)" }

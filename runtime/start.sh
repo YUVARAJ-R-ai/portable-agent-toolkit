@@ -148,10 +148,39 @@ if [ -z "$ORCHESTRATOR" ]; then
   exit 1
 fi
 
+# --- Expose portable dev environment on PATH if installed -------------------
+DEV_DIR="$SCRIPT_DIR/dev"
+if [ -d "$DEV_DIR" ]; then
+  export PATH="$DEV_DIR/zig:$DEV_DIR/rust/bin:$DEV_DIR/node/bin:$DEV_DIR/python/bin:$PATH"
+  export CARGO_HOME="$DEV_DIR/rust"
+  export RUSTUP_HOME="$DEV_DIR/rust"
+  export npm_config_cache="$DEV_DIR/node/cache"
+  export PIP_CACHE_DIR="$DEV_DIR/python/cache"
+  mkdir -p "$DEV_DIR/node/cache" "$DEV_DIR/python/cache"
+fi
+
+# --- Sync models into opencode.json -----------------------------------------
+JQ_BIN="$BIN_DIR/jq"
+if [ -f "$WORKSPACE/opencode.json" ] && [ -x "$JQ_BIN" ]; then
+  MODELS_OBJ="{}"
+  for gf in "$SCRIPT_DIR"/models/*.gguf; do
+    if [ -f "$gf" ]; then
+      mid="$(basename "$gf" .gguf)"
+      MODELS_OBJ="$("$JQ_BIN" --arg id "$mid" --arg name "$mid" '. + {($id): {name: $name}}' <<<"$MODELS_OBJ")"
+    fi
+  done
+  "$JQ_BIN" --arg model "local/$API_MODEL_NAME" --argjson m_map "$MODELS_OBJ" \
+    '.model = $model | .provider.local.models = $m_map' \
+    "$WORKSPACE/opencode.json" > "$WORKSPACE/opencode.json.tmp" 2>/dev/null && \
+    mv "$WORKSPACE/opencode.json.tmp" "$WORKSPACE/opencode.json" || true
+fi
+
 cd "$WORKSPACE"
 case "$(echo "$ORCHESTRATOR" | tr '[:upper:]' '[:lower:]')" in
   opencode)
-    "$OPENCODE_BIN"
+    XDG_CONFIG_HOME="$SCRIPT_DIR/opencode-config" \
+    XDG_DATA_HOME="$SCRIPT_DIR/opencode-data" \
+    "$OPENCODE_BIN" --model "local/$API_MODEL_NAME"
     ;;
   goose)
     XDG_CONFIG_HOME="$SCRIPT_DIR/goose-config" \

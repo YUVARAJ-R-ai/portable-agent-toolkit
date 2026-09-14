@@ -25,7 +25,10 @@ if ! curl -s -o /dev/null "$BASE/v1/models"; then
 fi
 
 OPTIONS_JSON="$(curl -s "$BASE/api/admin/list_options")"
-mapfile -t OPTIONS < <(echo "$OPTIONS_JSON" | "$JQ_BIN" -r '.[]?' 2>/dev/null)
+OPTIONS=()
+while IFS= read -r opt; do
+  [ -n "$opt" ] && OPTIONS+=("$opt")
+done < <(echo "$OPTIONS_JSON" | "$JQ_BIN" -r '.[]?' 2>/dev/null)
 
 if [ "${#OPTIONS[@]}" -eq 0 ]; then
   echo "No admin options returned by koboldcpp. It needs to have been started"

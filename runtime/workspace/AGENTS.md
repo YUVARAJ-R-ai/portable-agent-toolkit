@@ -18,8 +18,7 @@ negative, normalize with `((x % n) + n) % n` before comparing — never
 compare raw `%` results directly when either operand can be negative.
 
 ## Compile-check before declaring something done
-For C++ tasks, compile the file with `g++ -std=c++17 -Wall` (or the
-portable `zig c++` from the dev environment, if installed) via your `shell`
+For C++ tasks, compile the file with `zig c++ -std=c++17 -Wall` (available directly on PATH if the portable dev environment is installed) or system `g++` via your `shell`
 tool before telling the user it's done, and actually run it against at
 least one concrete input to sanity-check the output — don't just assert
 correctness from reading the code.
@@ -29,15 +28,20 @@ correctness from reading the code.
 For **any question that asks you to explain, implement, or debug a specific
 algorithm or algorithm-design technique** (sorting, greedy methods, divide
 and conquer, dynamic programming, encoding/compression, scheduling, graph
-algorithms, etc.) — call `bash ../rag-search.sh "<the topic, in a few
-words>"` with your `shell` tool **first, before** writing any explanation or
-code yourself, even for topics you don't immediately recognize as covered.
+algorithms, etc.) — call `bash ../rag-search.sh "<the topic, in a few words>"`
+(or `..\rag-search.bat "<the topic, in a few words>"` on Windows) with your `shell`
+tool **first, before** writing any explanation or code yourself, even for topics
+you don't immediately recognize as covered.
 
 **Do not pre-judge whether a topic is "in scope" yourself — always ask the
 tool and let its own answer decide that.** This corpus specifically covers
-Huffman coding, fractional knapsack, greedy algorithms (general idea),
-divide and conquer (general idea), maximum subarray, quicksort, mergesort,
-and assembly line scheduling — but you don't reliably know in advance
+PAT-1 & PAT-2 topics: greedy algorithms (general idea, Huffman coding, fractional knapsack),
+divide and conquer (general idea, maximum subarray, quicksort, mergesort),
+dynamic programming (assembly line scheduling), backtracking (N-Queens and all 6 exam variations),
+branch and bound (Job Selection with deadlines/profits, LCBB Job Assignment),
+string matching (Naïve, KMP, Rabin-Karp, Suffix Array + Kasai's LCP),
+graph algorithms (Kruskal's & Prim's MST, Floyd-Warshall APSP, Johnson's APSP),
+and the PAT-2 Master Complexity & Twist Detection Guide — but you don't reliably know in advance
 whether a given question falls in that list. The tool itself returns a
 clear `NO MATCH` for anything not covered — that is the correct way to find
 out, not guessing in advance. Skipping the tool call because you assume a
@@ -75,10 +79,10 @@ memory.
 ## Switching the model you're running on
 If the user asks you to switch/change the model (e.g. "switch to nanbeige",
 "use the other model"), use your `shell` tool to run
-`bash ../switch-model.sh <filename>` (path is relative to this workspace
-dir). Get the exact filename first with `bash ../switch-model.sh --list` —
-never guess it. This hot-swaps koboldcpp's loaded model in place (same port,
-same server process) and takes ~10-30s; the script blocks until the new
-model is confirmed ready, so just report its final "Now serving: ..." line
-back to the user. Do not use the interactive picker form (no arguments) —
-you don't have a terminal the user can interact with.
+`bash ../switch-model.sh <filename>` (or `..\switch-model.bat <filename>` on Windows,
+path is relative to this workspace dir). Get the exact filename first with
+`bash ../switch-model.sh --list` (or `..\switch-model.bat -List`) — never guess it.
+This hot-swaps koboldcpp's loaded model in place (same port, same server process)
+and takes ~10-30s; the script blocks until the new model is confirmed ready, so just
+report its final "Now serving: ..." line back to the user. Do not use the interactive
+picker form (no arguments) — you don't have a terminal the user can interact with.

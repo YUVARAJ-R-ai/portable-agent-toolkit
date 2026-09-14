@@ -39,3 +39,7 @@ the file actually loads in koboldcpp (`bin/koboldcpp --model <file>
 --foreground` and check for `Load Text Model OK: True`) before shipping the
 change — a model that fails to load is a worse experience than one missing
 from the list entirely.
+
+`start.sh` and `start.ps1` dynamically detect any `.gguf` files present in
+`<target>/models/` and automatically register them in `workspace/opencode.json`
+at runtime, so newly added models work seamlessly in both OpenCode and Goose.

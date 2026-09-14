@@ -29,10 +29,12 @@ if (-not $Components) {
         --header "Select optional components (space to toggle, enter to confirm):" `
         --cursor.foreground 212 --selected.foreground 212 `
         "Dev environment (C/C++, Rust, Node.js/React, Python)" `
-        "Claude Code (needs your own Anthropic subscription)"
+        "Claude Code (needs your own Anthropic subscription)" `
+        "Agy CLI (Antigravity CLI)"
     $Components = "core"
     if ($selected -match "Dev environment") { $Components += ",dev" }
     if ($selected -match "Claude Code") { $Components += ",claude-code" }
+    if ($selected -match "Agy CLI") { $Components += ",agy-cli" }
 }
 Write-Host "Components: $Components"
 
@@ -69,6 +71,9 @@ if ($Components -match "dev") {
 if ($Components -match "claude-code") {
     & powershell -NoProfile -ExecutionPolicy Bypass -File "$ScriptDir\components\claude-code.ps1" -Target $Target
 }
+if ($Components -match "agy-cli") {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File "$ScriptDir\components\agy-cli.ps1" -Target $Target
+}
 
 Write-Host "== Deploying runtime scripts, RAG corpus, and config =="
 Copy-Item "$ScriptDir\runtime\*" $Target -Recurse -Force
@@ -76,12 +81,28 @@ Copy-Item "$ScriptDir\rag" (Join-Path $Target "rag") -Recurse -Force
 New-Item -ItemType Directory -Force -Path (Join-Path $Target "config") | Out-Null
 Copy-Item "$ScriptDir\config\models.json" (Join-Path $Target "config\models.json") -Force
 
+$binDir = Join-Path $Target "bin\windows"
+$koboldVer = if (Test-Path (Join-Path $binDir "koboldcpp-nocuda.exe")) { try { (& (Join-Path $binDir "koboldcpp-nocuda.exe") --version 2>&1 | Select-Object -First 1) } catch { "" } } else { "" }
+$opencodeVer = if (Test-Path (Join-Path $binDir "opencode.exe")) { try { (& (Join-Path $binDir "opencode.exe") --version 2>&1 | Select-Object -First 1) } catch { "" } } else { "" }
+$gooseVer = if (Test-Path (Join-Path $binDir "goose.exe")) { try { (& (Join-Path $binDir "goose.exe") --version 2>&1 | Select-Object -First 1) } catch { "" } } else { "" }
+$gumVer = if (Test-Path (Join-Path $binDir "gum-windows-amd64.exe")) { try { (& (Join-Path $binDir "gum-windows-amd64.exe") --version 2>&1 | Select-Object -First 1) } catch { "" } } else { "" }
+$jqVer = if (Test-Path (Join-Path $binDir "jq-windows-amd64.exe")) { try { (& (Join-Path $binDir "jq-windows-amd64.exe") --version 2>&1 | Select-Object -First 1) } catch { "" } } else { "" }
+$agyVer = if (Test-Path (Join-Path $binDir "agy.exe")) { try { (& (Join-Path $binDir "agy.exe") --version 2>&1 | Select-Object -First 1) } catch { "" } } else { "" }
+
 $manifest = @{
     installed_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    versions     = @{
+        koboldcpp = [string]$koboldVer
+        opencode  = [string]$opencodeVer
+        goose     = [string]$gooseVer
+        gum       = [string]$gumVer
+        jq        = [string]$jqVer
+        agy       = [string]$agyVer
+    }
     components   = $Components
     models       = $Models
 }
-$manifest | ConvertTo-Json | Set-Content (Join-Path $Target ".versions.json")
+$manifest | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $Target ".versions.json")
 
 & $GumExe style --border rounded --padding "0 2" --margin "1 0" `
     --border-foreground 212 --foreground 212 "Install complete!"
@@ -94,3 +115,4 @@ Write-Host "  .\start.bat                 # koboldcpp + pick a model + pick Open
 Write-Host "  .\chat.bat                  # plain terminal chat, no orchestrator"
 if ($Components -match "dev") { Write-Host "  .\dev.bat                    # enter the portable C/C++/Rust/Node/Python shell" }
 if ($Components -match "claude-code") { Write-Host "  .\claude-code.bat            # real Claude Code CLI" }
+if ($Components -match "agy-cli") { Write-Host "  .\agy-cli.bat                # portable Agy CLI" }

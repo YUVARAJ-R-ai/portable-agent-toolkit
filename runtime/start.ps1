@@ -101,15 +101,44 @@ if (-not $Orchestrator) {
 if (-not $Orchestrator) {
     Write-Host "No orchestrator selected - exiting."
     if ($startedKobold -and $koboldProc -and -not $koboldProc.HasExited) {
-        & taskkill /PID $koboldProc.Id /T /F 2>$null | Out-Null
+        & taskkill /PID $koboldProc.Id /T /F 2>&1 | Out-Null
     }
     exit 1
 }
 
+$DevDir = Join-Path $ScriptDir "dev"
+if (Test-Path $DevDir) {
+    $env:Path = "$DevDir\zig;$DevDir\rust\bin;$DevDir\node;$DevDir\python;$env:Path"
+    $env:CARGO_HOME = Join-Path $DevDir "rust"
+    $env:RUSTUP_HOME = Join-Path $DevDir "rust"
+    $env:npm_config_cache = Join-Path $DevDir "node\cache"
+    $env:PIP_CACHE_DIR = Join-Path $DevDir "python\cache"
+}
+
+$wsDir = Join-Path $ScriptDir "workspace"
+$ocConfig = Join-Path $wsDir "opencode.json"
+if (Test-Path $ocConfig) {
+    try {
+        $json = Get-Content $ocConfig -Raw | ConvertFrom-Json
+        $modelsMap = @{}
+        Get-ChildItem -Path $ModelsDir -Filter "*.gguf" -File -ErrorAction SilentlyContinue | ForEach-Object {
+            $baseName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
+            $modelsMap[$baseName] = @{ name = $baseName }
+        }
+        $json.model = "local/$ApiModelName"
+        $json.provider.local.models = $modelsMap
+        $json | ConvertTo-Json -Depth 5 | Set-Content $ocConfig
+    } catch {}
+}
+
 try {
-    Set-Location (Join-Path $ScriptDir "workspace")
+    Set-Location $wsDir
     switch ($Orchestrator.ToLower()) {
-        "opencode" { & (Join-Path $BinDir "opencode.exe") }
+        "opencode" {
+            $env:XDG_CONFIG_HOME = Join-Path $ScriptDir "opencode-config"
+            $env:XDG_DATA_HOME = Join-Path $ScriptDir "opencode-data"
+            & (Join-Path $BinDir "opencode.exe") --model "local/$ApiModelName"
+        }
         "goose" {
             $env:APPDATA = Join-Path $ScriptDir "goose-config"
             $env:OPENAI_BASE_URL = "http://127.0.0.1:$Port/v1"
@@ -124,6 +153,6 @@ try {
 } finally {
     if ($startedKobold -and $koboldProc -and -not $koboldProc.HasExited) {
         Write-Host "Stopping koboldcpp (pid $($koboldProc.Id)) ..."
-        & taskkill /PID $koboldProc.Id /T /F 2>$null | Out-Null
+        & taskkill /PID $koboldProc.Id /T /F 2>&1 | Out-Null
     }
 }

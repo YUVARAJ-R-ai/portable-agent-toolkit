@@ -2,15 +2,23 @@
 # Usage: bash rag-search.sh "<query>" [--list]
 #
 # Looks up DAA (Design & Analysis of Algorithms) reference material — verified
-# C++ implementations + explanations for Huffman coding, fractional knapsack,
-# greedy algorithms (general idea), divide and conquer (general idea, maximum
-# subarray, quicksort, mergesort), and assembly line scheduling — and prints
-# the single best-matching topic's full content to stdout.
+# C++ implementations + explanations for PAT-1 & PAT-2 topics:
+# Huffman coding, fractional knapsack, greedy algorithms (general idea),
+# divide and conquer (general idea, maximum subarray, quicksort, mergesort),
+# assembly line scheduling (DP), N-Queens (backtracking & 6 exam twists),
+# Job Selection with Deadlines and Profits (Branch & Bound), Job Assignment (LCBB),
+# Naïve String Matching, KMP, Rabin-Karp, Suffix Structures (Suffix Array + LCP),
+# Kruskal's & Prim's MST (plus mandatory/forbidden & 2nd MST),
+# Floyd-Warshall APSP (plus path reconstruction & negative cycle check),
+# Johnson's Algorithm (sparse APSP), and the PAT-2 Twist Detection Guide —
+# and prints the single best-matching topic's full content to stdout.
 #
 #   bash rag-search.sh --list                 list all topics (id + description), no match needed
 #   bash rag-search.sh "huffman coding"        print the huffman_coding topic
 #   bash rag-search.sh "how do i sort fast"    ambiguous -> lists close candidates instead of guessing
 #   bash rag-search.sh "kadane"                still matches maximum_subarray_dc (both methods live there)
+#   bash rag-search.sh "amazon super queens"   matches n_queens_backtracking
+#   bash rag-search.sh "mandatory fiber"       matches mst_kruskal_prim
 #
 # Deliberately conservative: if there's no confident single best match, this
 # prints a short "no match" / "ambiguous" message and candidate topic ids
@@ -20,10 +28,24 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RAG_DIR="$SCRIPT_DIR/rag"
+if [ -d "$SCRIPT_DIR/rag" ]; then
+  RAG_DIR="$SCRIPT_DIR/rag"
+elif [ -d "$SCRIPT_DIR/../rag" ]; then
+  RAG_DIR="$SCRIPT_DIR/../rag"
+else
+  RAG_DIR="$SCRIPT_DIR/rag"
+fi
+
 INDEX="$RAG_DIR/index.json"
 TOPICS_DIR="$RAG_DIR/topics"
-JQ_BIN="$SCRIPT_DIR/bin/jq"
+
+if [ -x "$SCRIPT_DIR/bin/jq" ]; then
+  JQ_BIN="$SCRIPT_DIR/bin/jq"
+elif command -v jq >/dev/null 2>&1; then
+  JQ_BIN="$(command -v jq)"
+else
+  JQ_BIN="$SCRIPT_DIR/bin/jq"
+fi
 
 if [ ! -f "$INDEX" ]; then
   echo "RAG index not found at $INDEX" >&2

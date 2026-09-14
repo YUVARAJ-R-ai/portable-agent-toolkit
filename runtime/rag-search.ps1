@@ -8,6 +8,10 @@ param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RagDir = Join-Path $ScriptDir "rag"
+if (-not (Test-Path $RagDir)) {
+    $parentRag = Join-Path (Split-Path -Parent $ScriptDir) "rag"
+    if (Test-Path $parentRag) { $RagDir = $parentRag }
+}
 $Index = Join-Path $RagDir "index.json"
 $TopicsDir = Join-Path $RagDir "topics"
 
@@ -67,4 +71,4 @@ if ($bestCount -gt 1) {
     foreach ($c in $candidates) { Write-Host "  $c" }
     exit 0
 }
-Get-Content (Join-Path $TopicsDir $bestFile) -Raw | Write-Host
+Get-Content (Join-Path $TopicsDir $bestFile) -Raw | Write-Output
