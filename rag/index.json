@@ -110,6 +110,7 @@
         "profit deadline branch and bound", "job selection b&b", "emergency medical drop-offs", "satellite missions", "unit deadlines",
         "variable duration jobs", "job selection variable processing time", "knapsack scheduling hybrid", "multi-unit duration jobs",
         "job selection rejection penalties", "rejection penalties", "late fines", "effective profit", "delay fine",
+        "resource allocation", "lunar rover", "computational tasks", "task scheduling",
         "job selection release times", "release times and deadlines", "release windows", "optimistic upper bound job selection"
       ]
     },

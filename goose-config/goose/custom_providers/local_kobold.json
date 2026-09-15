@@ -1,0 +1,25 @@
+{
+  "name": "local_kobold",
+  "engine": "openai",
+  "display_name": "Local KoboldCPP",
+  "description": "Local KoboldCPP backend without streaming for reliable tool calls",
+  "api_key_env": "OPENAI_API_KEY",
+  "base_url": "http://127.0.0.1:5001/v1/chat/completions",
+  "models": [
+    {
+      "name": "qwen2.5-coder",
+      "context_limit": 16384
+    },
+    {
+      "name": "nanbeige4.2-3b",
+      "context_limit": 16384
+    },
+    {
+      "name": "Qwen3-Coder-30B-A3B-Instruct-Q4_K_M",
+      "context_limit": 16384
+    }
+  ],
+  "supports_streaming": false,
+  "dynamic_models": true,
+  "skip_canonical_filtering": true
+}

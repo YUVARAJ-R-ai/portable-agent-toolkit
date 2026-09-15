@@ -1,12 +1,19 @@
 # Agent instructions for this workspace
 
+## Tool Calling Format
+When invoking any tool (such as `write`, `shell`, `edit`, `tree`), you MUST emit the tool call inside `<tool_call>` XML tags:
+<tool_call>
+{"name": "<tool_name>", "arguments": <args_json_object>}
+</tool_call>
+Never wrap tool calls in ```json or markdown code blocks. Always use `<tool_call>` tags.
+
 ## Always use your tools — never just describe code in your reply
-When asked to write, create, or fix a file, you MUST call your `write` or
-`edit` tool to actually create/modify the file on disk. Do not respond with
-the code in a markdown block and stop there — that is not the same as
-completing the task, and the user has no file to compile or run afterward.
-After writing a file, verify it exists and briefly show its content back
-(e.g. via your `shell`/`tree` tool), don't just claim you created it.
+When asked to write, create, or fix a file, you MUST call your `write` tool
+(specifying `path` and `content`) or your `shell` tool (e.g. `cat << 'EOF' > file.cpp`)
+to actually create the file on disk before replying. Do NOT reply with the code in a
+markdown block without writing the file first — code in markdown text cannot be compiled or run.
+After writing the file, immediately call your `shell` tool to compile and execute it
+(e.g. `g++ -std=c++17 -Wall -O2 file.cpp -o file && ./file`) and confirm the test cases pass.
 
 ## C++ modulo with negative numbers
 In C++, `%` returns a result with the same sign as the *dividend* — so for
