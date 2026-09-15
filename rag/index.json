@@ -209,6 +209,42 @@
       ]
     },
     {
+      "id": "bellman_ford",
+      "file": "bellman_ford.md",
+      "category": "graph_algorithms",
+      "description": "Bellman-Ford Single-Source Shortest Path (SSSP): handles negative weights, O(V*E) edge relaxation, negative cycle detection, cycle vertex extraction, bounded-hop shortest path (K layovers), currency arbitrage",
+      "aliases": [
+        "bellman ford", "bellman-ford", "bellman ford algorithm", "sssp negative weights",
+        "single source shortest path negative edges", "negative weight cycle detection",
+        "bellman ford negative cycle", "detect arbitrage", "currency arbitrage",
+        "shortest path with at most k edges", "k layovers shortest path", "bounded hop shortest path"
+      ]
+    },
+    {
+      "id": "ford_fulkerson",
+      "file": "ford_fulkerson.md",
+      "category": "network_flow",
+      "description": "Ford-Fulkerson Method for Maximum Network Flow: residual graph G_f, augmenting path DFS, bottleneck capacity, Max-Flow Min-Cut theorem, minimum cut edge extraction, bipartite matching, vertex capacities",
+      "aliases": [
+        "ford fulkerson", "ford-fulkerson", "ford fulkerson method", "max flow",
+        "maximum flow", "network flow", "max-flow min-cut", "max flow min cut",
+        "minimum cut", "min cut", "bipartite matching max flow", "vertex capacities",
+        "bottleneck link detection", "flow network"
+      ]
+    },
+    {
+      "id": "edmonds_karp",
+      "file": "edmonds_karp.md",
+      "category": "network_flow",
+      "description": "Edmonds-Karp Algorithm for Maximum Flow: strongly polynomial O(V*E^2) implementation using BFS for shortest augmenting paths, edge-disjoint paths (Menger's theorem), multi-source multi-sink networks, image segmentation",
+      "aliases": [
+        "edmonds karp", "edmonds-karp", "edmonds karp algorithm", "edmond karp",
+        "bfs max flow", "shortest augmenting path", "polynomial max flow",
+        "edge disjoint paths", "menger's theorem", "multi source multi sink flow",
+        "supersource supersink", "image segmentation min cut"
+      ]
+    },
+    {
       "id": "pat2_twist_cheat_sheet",
       "file": "pat2_twist_cheat_sheet.md",
       "category": "exam_reference",

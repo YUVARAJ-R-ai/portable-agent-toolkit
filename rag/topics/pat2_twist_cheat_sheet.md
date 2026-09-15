@@ -19,6 +19,9 @@ Comprehensive reference guide for DAA Lab PAT-2 (Design & Analysis of Algorithms
 | **Prim's Algorithm (MST)** | $O(E \log V)$ | $O(E \log V)$ | $O(E \log V)$ | $O(V + E)$ | `std::priority_queue` (Min-Heap) + Adjacency List |
 | **Floyd-Warshall (APSP)** | $O(V^3)$ | $O(V^3)$ | $O(V^3)$ | $O(V^2)$ | 2D DP Distance Matrix + `nextNode` Path Matrix |
 | **Johnson's Algorithm (APSP)** | $O(V^2 \log V + VE)$ | $O(V^2 \log V + VE)$ | $O(V^2 \log V + VE)$ | $O(V + E)$ | Bellman-Ford Potentials + Adjacency List + Min-Heap |
+| **Bellman-Ford (SSSP)** | $O(E)$ | $O(V \cdot E)$ | $O(V \cdot E)$ | $O(V + E)$ | Edge List + Distance/Predecessor Arrays |
+| **Ford-Fulkerson (Max-Flow)** | $O(E)$ | $O(E \cdot |f^*|)$ | $O(E \cdot |f^*|)$ | $O(V^2)$ | Residual Capacity Matrix + DFS Reachability |
+| **Edmonds-Karp (Max-Flow)** | $O(E)$ | $O(V \cdot E^2)$ | $O(V \cdot E^2)$ | $O(V + E)$ | Residual Matrix / List + BFS Queue + Parent Array |
 
 ---
 
@@ -47,6 +50,13 @@ Comprehensive reference guide for DAA Lab PAT-2 (Design & Analysis of Algorithms
 | **Redundant backup network with second lowest installation cost** | **2nd MST** | Remove each MST edge one by one and find cheapest alternative spanning tree. |
 | **Maximize bottleneck bandwidth / widest path between all nodes** | **Floyd-Warshall** | Maximin DP: `cap[i][j] = max(cap[i][j], min(cap[i][k], cap[k][j]))`. |
 | **Negative communication delays / detect infinite gain loops** | **Floyd-Warshall** | Check if `dist[k][k] < 0`; mark affected node pairs as `-INF`. |
+| **Negative weight edges with single source & cycle detection** | **Bellman-Ford** | Relax all edges $V-1$ times; 1 more pass identifies negative cycles. |
+| **Flight booking with at most K layovers / bounded hops** | **Bellman-Ford** | Run exactly $K$ iterations using previous iteration distance snapshot. |
+| **Currency conversion loop with guaranteed arbitrage** | **Bellman-Ford** | Set weight $w = -\ln(\text{rate})$; negative cycle = arbitrage. |
+| **Identify critical bottleneck links in network / maximum throughput** | **Ford-Fulkerson / EK** | Max-Flow Min-Cut: find cut edges $(u \in S, v \notin S)$ from residual BFS. |
+| **Maximum independent communication channels / edge-disjoint paths** | **Edmonds-Karp** | Set all edge capacities to $1$; Max Flow = max edge-disjoint paths. |
+| **Multi-factory supply and multi-warehouse demand network** | **Edmonds-Karp** | Add Supersource $S^*$ with supply caps and Supersink $T^*$ with demand caps. |
+| **Internal router processing throughput limits** | **Network Flow** | Split vertex into $v_{\text{in}} \to v_{\text{out}}$ with edge capacity = node throughput limit. |
 
 ---
 
