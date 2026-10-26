@@ -132,6 +132,10 @@ echo "== Deploying runtime scripts, RAG corpus, and config =="
 cp -r "$SCRIPT_DIR/runtime/." "$TARGET/"
 mkdir -p "$TARGET/rag"
 cp -r "$SCRIPT_DIR/rag/." "$TARGET/rag/"
+if [ -d "$SCRIPT_DIR/goose-config" ]; then
+  mkdir -p "$TARGET/goose-config"
+  cp -r "$SCRIPT_DIR/goose-config/." "$TARGET/goose-config/"
+fi
 mkdir -p "$TARGET/config"
 cp "$SCRIPT_DIR/config/models.json" "$TARGET/config/models.json"
 chmod +x "$TARGET"/*.sh 2>/dev/null || true

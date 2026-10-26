@@ -1,12 +1,14 @@
 # Usage: .\rag-search.bat "<query>" [-List]
-# Mirrors rag-search.sh (execution-verified on Linux, including a specificity-
-# scoring fix). Untested on Windows.
 param(
     [switch]$List,
-    [string]$Query = ""
+    [switch]$l,
+    [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
+    [string[]]$QueryParts
 )
 
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
+
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $RagDir = Join-Path $ScriptDir "rag"
 if (-not (Test-Path $RagDir)) {
     $parentRag = Join-Path (Split-Path -Parent $ScriptDir) "rag"
@@ -15,22 +17,21 @@ if (-not (Test-Path $RagDir)) {
 $Index = Join-Path $RagDir "index.json"
 $TopicsDir = Join-Path $RagDir "topics"
 
-if (-not (Test-Path $Index)) { Write-Host "RAG index not found at $Index"; exit 1 }
-$data = Get-Content $Index -Raw | ConvertFrom-Json
+if (-not (Test-Path $Index)) { Write-Host "RAG index not found at $Index" -ForegroundColor Red; exit 1 }
+$data = Get-Content $Index -Raw -Encoding UTF8 | ConvertFrom-Json
 
-if ($List) {
+$Query = ""
+if ($QueryParts) {
+    $Query = ($QueryParts -join " ").Trim()
+}
+
+$isList = $List -or $l -or ($Query -eq "--list") -or ($Query -eq "-list") -or ($Query -eq "/list") -or ($Query -eq "-l")
+if ($isList) {
     foreach ($t in $data.topics) { Write-Host "$($t.id)  -  $($t.description)" }
     exit 0
 }
 if (-not $Query) { Write-Host 'Usage: .\rag-search.bat "<query>" [-List]'; exit 1 }
 $queryLc = $Query.ToLower()
-
-if ($queryLc -match '(0/1|0-1|01|zero.one|zero-one)\s*knapsack') {
-    Write-Host "NOT COVERED: this corpus only has the FRACTIONAL knapsack (greedy) topic."
-    Write-Host "0/1 knapsack (items indivisible) is a DIFFERENT problem that needs dynamic"
-    Write-Host "programming -- greedy does not give the optimal answer for it."
-    exit 0
-}
 
 $scores = @{}
 $candidates = @()
@@ -71,4 +72,4 @@ if ($bestCount -gt 1) {
     foreach ($c in $candidates) { Write-Host "  $c" }
     exit 0
 }
-Get-Content (Join-Path $TopicsDir $bestFile) -Raw | Write-Output
+Get-Content (Join-Path $TopicsDir $bestFile) -Raw -Encoding UTF8 | Write-Output

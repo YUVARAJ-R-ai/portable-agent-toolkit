@@ -16,6 +16,11 @@
 # differs per host/mount point, so a session started elsewhere may not show
 # up under --continue on a different machine. Use plain --resume (no ID) for
 # the interactive picker if history looks empty.
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  a=(); for x in "$@"; do case "$x" in --skip-permissions|-y) a+=(-SkipPermissions) ;; *) a+=("$x") ;; esac; done
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\claude-code.ps1" "${a[@]}" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

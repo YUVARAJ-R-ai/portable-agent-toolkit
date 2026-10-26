@@ -2,6 +2,10 @@
 # Usage: bash chat.sh [model]
 # Terminal chat with the local model featuring real-time SSE token streaming,
 # ANSI-styled interface, interactive slash commands, and hot-key controls.
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\chat.ps1" "$@" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

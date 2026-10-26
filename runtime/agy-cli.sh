@@ -2,6 +2,11 @@
 # Usage: bash agy-cli.sh [agy args...]
 # Launches the portable Agy (Antigravity) CLI from this install.
 # Configures the home directory environment variable so Agy saves its configs and OAuth tokens locally.
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  a=(); for x in "$@"; do case "$x" in --workspace) a+=(-Workspace) ;; *) a+=("$x") ;; esac; done
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\agy-cli.ps1" "${a[@]}" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

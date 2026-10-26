@@ -115,3 +115,152 @@ int main() {
 Fastest total time: 38
 Path (station -> line): S1->L1  S2->L2  S3->L1  S4->L2  S5->L2  S6->L1
 ```
+
+---
+
+# FAT Lab-Exam Version & Your Lab Programs (BCSE204P, Dr. Sakthivel R)
+
+Every program below was extracted from your lab reports / FAT guide, compiled with `g++ -std=c++17 -Wall -O2`, and run; outputs shown are the real program output.
+
+## Lab questions & verified answers
+
+| Lab question | Scenario & input data | Verified answer |
+|---|---|---|
+| Lab 3 Q3 | 6 stations. a1=[6,9,2,5,7,3], a2=[5,7,4,8,6,4], t1=[4,2,5,3,1], t2=[3,4,2,5,4], e=(2,4), x=(3,2) | **37 minutes** |
+| FAT example | 4 stations. a1=[4,5,3,2], a2=[2,10,1,4], t1=[7,4,5], t2=[9,2,8], e=(10,12), x=(18,7) | **35 minutes** |
+
+## Assembly Line Scheduling (Dynamic Programming)
+
+### Assembly Line Scheduling
+**Lab scenario:** Automotive Plant Car Chassis Production Across Two Parallel Assembly Lines
+
+A factory has two parallel assembly lines (Line 1, Line 2), each with $n$ stations.
+- Entry times: $e_1, e_2$; Exit times: $x_1, x_2$.
+- Station execution times: $a_{1, j}, a_{2, j}$.
+- Switching transfer times: $t_{1, j}$ (switch from Line 1 to 2 after station $j$), $t_{2, j}$ (switch from Line 2 to 1).
+Find the fastest route from entry to exit.
+
+### Algorithm: AssemblyLine
+```python
+AssemblyLine(a, t, e, x, n):
+    f1[0] = e[0] + a[0][0]
+    f2[0] = e[1] + a[1][0]
+
+    FOR j = 1 TO n - 1:
+        f1[j] = min(f1[j - 1] + a[0][j], f2[j - 1] + t[1][j - 1] + a[0][j])
+        f2[j] = min(f2[j - 1] + a[1][j], f1[j - 1] + t[0][j - 1] + a[1][j])
+
+    total_time = min(f1[n - 1] + x[0], f2[n - 1] + x[1])
+    RETURN total_time
+```
+
+### Concise C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n = 4;
+    int a[2][4] = {{4, 5, 3, 2}, {2, 10, 1, 4}};
+    int t[2][3] = {{7, 4, 5}, {9, 2, 8}};
+    int e[2] = {10, 12};
+    int x[2] = {18, 7};
+
+    int f1 = e[0] + a[0][0];
+    int f2 = e[1] + a[1][0];
+
+    for (int j = 1; j < n; ++j) {
+        int next_f1 = min(f1 + a[0][j], f2 + t[1][j - 1] + a[0][j]);
+        int next_f2 = min(f2 + a[1][j], f1 + t[0][j - 1] + a[1][j]);
+        f1 = next_f1;
+        f2 = next_f2;
+    }
+
+    int totalMin = min(f1 + x[0], f2 + x[1]);
+    cout << "Minimum Assembly Time = " << totalMin << " minutes\n";
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+Minimum Assembly Time = 35 minutes
+```
+
+### Cheese Code: Recursive Branching (6 Lines)
+**Why it works in the exam:** For n=4 stations, a tiny 6-line recursive helper finds the answer without creating DP tables!
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int a[2][4]={{4,5,3,2},{2,10,1,4}}, t[2][3]={{7,4,5},{9,2,8}}, e[2]={10,12}, x[2]={18,7};
+int solve(int line, int s) {
+    if (s == 3) return a[line][3] + x[line];
+    return a[line][s] + min(solve(line, s+1), t[line][s] + solve(1-line, s+1));
+}
+int main() { cout << min(e[0] + solve(0,0), e[1] + solve(1,0)) << " minutes\n"; }
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+35 minutes
+```
+
+### Silly Mistakes & Traps: Assembly Line
+1. **Switching Penalty Index Misalignment:** When transitioning from Line 2 to Line 1 at station $j$, the transfer cost is $t_{2, j-1}$, NOT $t_{2, j}$! Transfer happens **between** station $j-1$ and station $j$.
+2. **Missing Exit Costs:** Forgetting to add $x_1$ and $x_2$ at the exit station is the most frequent exam mistake.
+
+**Complexity:** best O(n) · average O(n) · worst O(n) · auxiliary space O(1) optimal / O(n) table  
+**Recurrence:** f(j) depends on f(j-1) => O(n) single pass
+
+## Your lab-report programs
+
+### Your Lab 3 Q3 program (recursive, 6 stations)
+
+```cpp
+#include <iostream>
+#include <climits>
+
+using namespace std;
+const int N=6;
+
+int a[2][N]={
+    {6,9,2,5,7,3},
+    {5,7,4,8,6,4}
+};
+
+int t[2][N-1]={
+    {4,2,5,3,1},
+    {3,4,2,5,4}
+};
+
+int e[2]={2,4};
+int x[2]={3,2};
+
+int Asl (int line , int station){
+    if(station==N-1){
+        return a[line][station]+x[line];
+    }
+    int stay=a[line][station]+Asl(line,station+1);
+
+    int change=a[line][station]+t[line][station]+Asl(1-line,station+1);
+    return min(stay,change);
+}
+
+
+
+int main(){
+    int ans=min(e[0]+Asl(0,0),e[1]+Asl(1,0));
+    cout <<"\nMinimum Assembly Time="<<ans<<"minutes"<<endl;
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+
+Minimum Assembly Time=37minutes
+```

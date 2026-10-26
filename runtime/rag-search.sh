@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 # Usage: bash rag-search.sh "<query>" [--list]
 #
-# Looks up DAA (Design & Analysis of Algorithms) reference material — verified
-# C++ implementations + explanations for PAT-1 & PAT-2 topics:
-# Huffman coding, fractional knapsack, greedy algorithms (general idea),
-# divide and conquer (general idea, maximum subarray, quicksort, mergesort),
-# assembly line scheduling (DP), N-Queens (backtracking & 6 exam twists),
-# Job Selection with Deadlines and Profits (Branch & Bound), Job Assignment (LCBB),
-# Naïve String Matching, KMP, Rabin-Karp, Suffix Structures (Suffix Array + LCP),
-# Kruskal's & Prim's MST (plus mandatory/forbidden & 2nd MST),
-# Floyd-Warshall APSP (plus path reconstruction & negative cycle check),
-# Johnson's Algorithm (sparse APSP), and the PAT-2 Twist Detection Guide —
-# and prints the single best-matching topic's full content to stdout.
+# Looks up DAA (Design & Analysis of Algorithms) reference material: verified
+# C++ implementations + explanations for the PAT-1, PAT-2 and FAT lab topics
+# (greedy, divide & conquer, DP, backtracking, branch & bound, string matching,
+# graphs, network flow, geometry, NP verification, approximation, randomized),
+# including your lab-report programs with their verified answers, and prints
+# the single best-matching topic's full content to stdout.
 #
 #   bash rag-search.sh --list                 list all topics (id + description), no match needed
 #   bash rag-search.sh "huffman coding"        print the huffman_coding topic
@@ -25,6 +20,10 @@
 # instead of guessing — returning the WRONG topic's content silently is a much
 # worse failure than admitting no match, since it's exactly what causes an
 # agent reading this output to hallucinate confidently.
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\rag-search.ps1" "$@" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -65,17 +64,6 @@ if [ -z "$QUERY" ]; then
   exit 1
 fi
 QUERY_LC="$(echo "$QUERY" | tr '[:upper:]' '[:lower:]')"
-
-# Explicit guard: 0/1 (0-1) knapsack is NOT in this corpus and must never be
-# silently answered with the fractional-knapsack greedy solution (they are
-# different problems with different correct algorithms).
-if echo "$QUERY_LC" | grep -qE "(0/1|0-1|01|zero.one|zero-one)[[:space:]]*knapsack"; then
-  echo "NOT COVERED: this corpus only has the FRACTIONAL knapsack (greedy) topic."
-  echo "0/1 knapsack (items indivisible) is a DIFFERENT problem that needs dynamic"
-  echo "programming — greedy does not give the optimal answer for it. Do not answer"
-  echo "a 0/1 knapsack question using the fractional-knapsack solution."
-  exit 0
-fi
 
 IDS=()
 FILES=()

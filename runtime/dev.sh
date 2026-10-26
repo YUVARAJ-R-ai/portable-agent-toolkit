@@ -5,6 +5,10 @@
 # your host's real ~/.cargo, ~/.npm, system compilers, or system PATH
 # permanently. `exit` (or Ctrl+D) returns you to your normal shell exactly
 # as it was before.
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\dev.ps1" "$@" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

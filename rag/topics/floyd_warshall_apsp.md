@@ -138,3 +138,117 @@ void widestPathAllPairs(int V, vector<vector<int>>& capacity) {
 - **Scenario Keywords**: "Transitive closure", "reachability matrix", "determine directed path existence".
 - **Adaptation**: Boolean values with bitwise OR/AND:
   $$\text{reach}[i][j] = \text{reach}[i][j] \lor (\text{reach}[i][k] \land \text{reach}[k][j])$$
+
+---
+
+# FAT Lab-Exam Version & Your Lab Programs (BCSE204P, Dr. Sakthivel R)
+
+Every program below was extracted from your lab reports / FAT guide, compiled with `g++ -std=c++17 -Wall -O2`, and run; outputs shown are the real program output.
+
+## Lab questions & verified answers
+
+| Lab question | Scenario & input data | Verified answer |
+|---|---|---|
+| FAT Module 7 | 4×4 matrix [0,3,∞,7] [8,0,2,∞] [5,∞,0,1] [2,∞,∞,0] | [0,3,5,6] [5,0,2,3] [3,6,0,1] [2,5,7,0] |
+
+## All-Pairs Shortest Path: Floyd-Warshall Algorithm
+
+### Floyd-Warshall Algorithm
+**Lab scenario:** All-Pairs Route Optimization in Dense Transit Networks
+
+Given a weighted graph with no negative cycles, compute the shortest path between every pair of vertices $(i, j)$ using dynamic programming.
+- $D[i][j] = min(D[i][j], D[i][k] + D[k][j])$
+- **Critical Rule:** The intermediate vertex $k$ MUST be the **outermost** loop!
+
+### Algorithm: FloydWarshall
+```python
+FloydWarshall(V, W):
+    D = copy(W)   # Adjacency matrix of edge weights
+
+    FOR k = 0 TO V - 1:            # Intermediate vertex MUST be outermost!
+        FOR i = 0 TO V - 1:
+            FOR j = 0 TO V - 1:
+                IF D[i][k] + D[k][j] < D[i][j]:
+                    D[i][j] = D[i][k] + D[k][j]
+
+    RETURN D
+```
+
+### Concise C++ Implementation (O(V^3))
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int INF = 1e9;
+
+int main() {
+    int V = 4;
+    vector<vector<int>> dist = {
+        {0, 3, INF, 7},
+        {8, 0, 2, INF},
+        {5, INF, 0, 1},
+        {2, INF, INF, 0}
+    };
+
+    // k MUST be the outermost loop!
+    for (int k = 0; k < V; ++k)
+        for (int i = 0; i < V; ++i)
+            for (int j = 0; j < V; ++j)
+                if (dist[i][k] < INF && dist[k][j] < INF)
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+
+    cout << "All-Pairs Shortest Distance Matrix:\n";
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            if (dist[i][j] == INF) cout << "INF\t";
+            else cout << dist[i][j] << "\t";
+        }
+        cout << "\n";
+    }
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+All-Pairs Shortest Distance Matrix:
+0	3	5	6	
+5	0	2	3	
+3	6	0	1	
+2	5	7	0
+```
+
+### Cheese Code: Barebones 6-Line Triple Loop
+**Why it works in the exam:** Floyd-Warshall is the easiest DP algorithm to code: 3 nested for loops with one min statement!
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int d[4][4] = {{0,3,1000,7},{8,0,2,1000},{5,1000,0,1},{2,1000,1000,0}};
+int main() {
+    for (int k = 0; k < 4; ++k)
+        for (int i = 0; i < 4; ++i)
+            for (int j = 0; j < 4; ++j)
+                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+    for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) cout << d[i][j] << " "; cout << "\n"; }
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+0 3 5 6 
+5 0 2 3 
+3 6 0 1 
+2 5 7 0
+```
+
+### Silly Mistakes & Traps: Floyd-Warshall
+1. **Incorrect Loop Nesting:** Putting `k` as the inner loop completely destroys the DP invariant! $k$ represents the maximum allowed intermediate vertex index and MUST be the outermost loop.
+2. **Addition Overflow:** If `INF = INT_MAX`, `dist[i][k] + dist[k][j]` overflows into negative numbers. Always use `INF = 1e9` or guard with `dist[i][k] < INF && dist[k][j] < INF`.
+3. **Self-Loop Diagonal:** Ensure $D[i][i] = 0$ at the start. If $D[i][i] < 0$ after execution, a negative-weight cycle exists.
+
+**Complexity:** best O(V^3) · average O(V^3) · worst O(V^3) · auxiliary space O(V^2) matrix  
+**Recurrence:** D^(k)[i][j] = min(D^(k-1)[i][j], D^(k-1)[i][k] + D^(k-1)[k][j])

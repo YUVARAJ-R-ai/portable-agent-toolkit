@@ -10,6 +10,10 @@
 #   bash switch-model.sh                  interactive picker (gum)
 #   bash switch-model.sh --list           print available options, no swap
 #   bash switch-model.sh qwen2.5-coder.gguf   swap directly, no picker
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\switch-model.ps1" "$@" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

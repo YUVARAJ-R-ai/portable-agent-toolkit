@@ -8,33 +8,54 @@ param(
     [string]$Models = ""
 )
 
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 . "$ScriptDir\lib\common.ps1"
 
 if (-not $Target) {
-    $Target = Read-Host "Install directory [$(Join-Path (Get-Location) 'portable-agent')]"
-    if (-not $Target) { $Target = Join-Path (Get-Location) "portable-agent" }
+    $defaultTarget = Join-Path (Get-Location) "portable-agent"
+    $Target = Read-Host "Install directory [$defaultTarget]"
+    if (-not $Target) { $Target = $defaultTarget }
 }
 New-Item -ItemType Directory -Force -Path $Target | Out-Null
 $Target = (Resolve-Path $Target).Path
 Write-Host "Installing into: $Target"
 
 $GumExe = Install-Gum -Target $Target
+$HasGum = $false
+if ($GumExe -and (Test-Path $GumExe)) {
+    try { & $GumExe --version 2>&1 | Out-Null; $HasGum = $true } catch { $HasGum = $false }
+}
 
 if (-not $Components) {
-    & $GumExe style --border rounded --padding "0 2" --margin "1 0" `
-        --border-foreground 212 --foreground 212 "Portable Agent Toolkit - Installer"
-    Write-Host "Core AI-agent stack (koboldcpp + OpenCode + Goose + RAG) is always installed."
-    $selected = & $GumExe choose --no-limit `
-        --header "Select optional components (space to toggle, enter to confirm):" `
-        --cursor.foreground 212 --selected.foreground 212 `
-        "Dev environment (C/C++, Rust, Node.js/React, Python)" `
-        "Claude Code (needs your own Anthropic subscription)" `
-        "Agy CLI (Antigravity CLI)"
-    $Components = "core"
-    if ($selected -match "Dev environment") { $Components += ",dev" }
-    if ($selected -match "Claude Code") { $Components += ",claude-code" }
-    if ($selected -match "Agy CLI") { $Components += ",agy-cli" }
+    if ($HasGum) {
+        & $GumExe style --border rounded --padding "0 2" --margin "1 0" `
+            --border-foreground 212 --foreground 212 "Portable Agent Toolkit - Installer"
+        Write-Host "Core AI-agent stack (koboldcpp + OpenCode + Goose + RAG) is always installed."
+        $selected = & $GumExe choose --no-limit `
+            --header "Select optional components (space to toggle, enter to confirm):" `
+            --cursor.foreground 212 --selected.foreground 212 `
+            "Dev environment (C/C++, Rust, Node.js/React, Python)" `
+            "Claude Code (needs your own Anthropic subscription)" `
+            "Agy CLI (Antigravity CLI)"
+        $Components = "core"
+        if ($selected -match "Dev environment") { $Components += ",dev" }
+        if ($selected -match "Claude Code") { $Components += ",claude-code" }
+        if ($selected -match "Agy CLI") { $Components += ",agy-cli" }
+    } else {
+        Write-Host "========================================" -ForegroundColor Cyan
+        Write-Host "   Portable Agent Toolkit - Installer   " -ForegroundColor Cyan
+        Write-Host "========================================" -ForegroundColor Cyan
+        Write-Host "Core AI-agent stack (koboldcpp + OpenCode + Goose + RAG) is always installed."
+        Write-Host "Select optional components to install:"
+        Write-Host "  1. Dev environment (C/C++, Rust, Node.js/React, Python)"
+        Write-Host "  2. Claude Code (needs your own Anthropic subscription)"
+        Write-Host "  3. Agy CLI (Antigravity CLI)"
+        $ans = Read-Host "Enter numbers separated by comma (e.g. 1,2), or press enter for core only"
+        $Components = "core"
+        if ($ans -match "1") { $Components += ",dev" }
+        if ($ans -match "2") { $Components += ",claude-code" }
+        if ($ans -match "3") { $Components += ",agy-cli" }
+    }
 }
 Write-Host "Components: $Components"
 
@@ -47,14 +68,29 @@ if (-not $Models) {
         if ($m.default_selected) { $defaultLabel = $label }
     }
     Write-Host "Detected system RAM: ~$(Get-TotalRamGB)GB"
-    $selectedModels = & $GumExe choose --no-limit `
-        --header "Select model(s) to download (space to toggle, enter to confirm):" `
-        --selected $defaultLabel --cursor.foreground 212 --selected.foreground 212 `
-        $labels
-    $Models = ""
-    for ($i = 0; $i -lt $labels.Count; $i++) {
-        if ($selectedModels -contains $labels[$i]) {
-            $Models += $(if ($Models) { "," } else { "" }) + $ids[$i]
+    if ($HasGum) {
+        $selectedModels = & $GumExe choose --no-limit `
+            --header "Select model(s) to download (space to toggle, enter to confirm):" `
+            --selected $defaultLabel --cursor.foreground 212 --selected.foreground 212 `
+            $labels
+        $Models = ""
+        for ($i = 0; $i -lt $labels.Count; $i++) {
+            if ($selectedModels -contains $labels[$i]) {
+                $Models += $(if ($Models) { "," } else { "" }) + $ids[$i]
+            }
+        }
+    } else {
+        Write-Host "Available models:"
+        for ($i = 0; $i -lt $labels.Count; $i++) {
+            Write-Host "  $($i + 1). $($labels[$i])"
+        }
+        $picked = Read-Host "Enter model number to download (default: 1 for $($labels[0]))"
+        if (-not $picked) { $picked = "1" }
+        $idx = [int]$picked - 1
+        if ($idx -ge 0 -and $idx -lt $ids.Count) {
+            $Models = $ids[$idx]
+        } else {
+            $Models = $ids[0]
         }
     }
 }
@@ -63,7 +99,7 @@ Write-Host "Models: $(if ($Models) { $Models } else { 'none' })"
 & powershell -NoProfile -ExecutionPolicy Bypass -File "$ScriptDir\components\core-agent-stack.ps1" -Target $Target
 
 if ($Models) {
-    & powershell -NoProfile -ExecutionPolicy Bypass -File "$ScriptDir\components\models.ps1" -Target $Target -ConfigPath "$ScriptDir\config\models.json" ($Models -split ",")
+    & powershell -NoProfile -ExecutionPolicy Bypass -File "$ScriptDir\components\models.ps1" -Target $Target -ConfigPath "$ScriptDir\config\models.json" -ModelIds ($Models -split ",")
 }
 if ($Components -match "dev") {
     & powershell -NoProfile -ExecutionPolicy Bypass -File "$ScriptDir\components\dev-environment.ps1" -Target $Target
@@ -77,7 +113,12 @@ if ($Components -match "agy-cli") {
 
 Write-Host "== Deploying runtime scripts, RAG corpus, and config =="
 Copy-Item "$ScriptDir\runtime\*" $Target -Recurse -Force
-Copy-Item "$ScriptDir\rag" (Join-Path $Target "rag") -Recurse -Force
+New-Item -ItemType Directory -Force -Path (Join-Path $Target "rag") | Out-Null
+Copy-Item "$ScriptDir\rag\*" (Join-Path $Target "rag") -Recurse -Force
+New-Item -ItemType Directory -Force -Path (Join-Path $Target "goose-config") | Out-Null
+if (Test-Path "$ScriptDir\goose-config") {
+    Copy-Item "$ScriptDir\goose-config\*" (Join-Path $Target "goose-config") -Recurse -Force
+}
 New-Item -ItemType Directory -Force -Path (Join-Path $Target "config") | Out-Null
 Copy-Item "$ScriptDir\config\models.json" (Join-Path $Target "config\models.json") -Force
 
@@ -102,10 +143,17 @@ $manifest = @{
     components   = $Components
     models       = $Models
 }
-$manifest | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $Target ".versions.json")
+$manifestJson = $manifest | ConvertTo-Json -Depth 5
+[System.IO.File]::WriteAllText((Join-Path $Target ".versions.json"), $manifestJson, (New-Object System.Text.UTF8Encoding $false))
 
-& $GumExe style --border rounded --padding "0 2" --margin "1 0" `
-    --border-foreground 212 --foreground 212 "Install complete!"
+if ($HasGum) {
+    & $GumExe style --border rounded --padding "0 2" --margin "1 0" `
+        --border-foreground 212 --foreground 212 "Install complete!"
+} else {
+    Write-Host "========================================" -ForegroundColor Green
+    Write-Host "           Install complete!            " -ForegroundColor Green
+    Write-Host "========================================" -ForegroundColor Green
+}
 Write-Host ""
 Write-Host "Installed into: $Target"
 Write-Host ""

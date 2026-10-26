@@ -304,3 +304,180 @@ void solveKQueens(int row, int queensPlaced, int K, int N, int M,
     solveKQueens(row + 1, queensPlaced, K, N, M, cols, d1, d2, count);
 }
 ```
+
+---
+
+# FAT Lab-Exam Version & Your Lab Programs (BCSE204P, Dr. Sakthivel R)
+
+Every program below was extracted from your lab reports / FAT guide, compiled with `g++ -std=c++17 -Wall -O2`, and run; outputs shown are the real program output.
+
+## Lab questions & verified answers
+
+| Lab question | Scenario & input data | Verified answer |
+|---|---|---|
+| Lab 5 Q1 | N×N security chip, N cryptographic engines with no row/column/diagonal EM overlap (N read from stdin) | N=4: **2** placements: [1,3,0,2] and [2,0,3,1] |
+| PAT-2 (pat2/nqueen.cpp) | Class-based N-Queens with cols/dg1/dg2 arrays, N = 8 | **92** solutions |
+
+## N-Queens Problem & Hardware Security Chip Placement
+
+### N-Queens & EM Interference Constraint
+**Lab scenario:** Cryptographic Engines on N x N Hardware Security Grid (Zero EM cross-talk interference)
+
+Place $N$ non-attacking queens (or cryptographic engines) on an $N × N$ grid such that no two engines share the same row, column, or diagonal line of sight.
+
+**Backtracking Strategy:**
+1. Place engines row by row ($0 … N-1$).
+2. At row $r$, evaluate candidate column $c in [0, N-1]$.
+3. Use $O(1)$ boolean lookup arrays for column and both diagonal axes.
+4. If placing an engine at $(r, c)$ is safe, mark the axis, recurse to row $r+1$, and unmark upon backtrack.
+
+### Algorithm: NQueensBacktrack
+```python
+NQueensBacktrack(row, N, grid, cols, diag1, diag2):
+    IF row == N:
+        solutions.append(grid)
+        RETURN
+
+    FOR col = 0 TO N - 1:
+        d1 = row - col + N - 1    # Major diagonal \
+        d2 = row + col            # Minor diagonal /
+
+        IF NOT cols[col] AND NOT diag1[d1] AND NOT diag2[d2]:
+            grid[row][col] = 'Q'
+            cols[col] = diag1[d1] = diag2[d2] = TRUE
+
+            NQueensBacktrack(row + 1, N, grid, cols, diag1, diag2)
+
+            # Backtrack
+            grid[row][col] = '.'
+            cols[col] = diag1[d1] = diag2[d2] = FALSE
+```
+
+### Step-by-Step Backtracking Tree Trace (N=4 Queens)
+**Row-by-Row Search with Backtrack Unwinding:**
+1. **Row 0:** Try $(0, 0)$. Valid. Mark `cols[0]`, `diag1[3]`, `diag2[0]`.
+2. **Row 1:**
+- Col 0: Blocked by `cols[0]`.
+- Col 1: Blocked by `diag1` ($(1, 1)$ shares major diagonal with $(0, 0)$).
+- Col 2: Safe! Place at $(1, 2)$.
+3. **Row 2:**
+- Col 0: Blocked by `cols[0]`.
+- Col 1: Blocked by `diag2` ($(2, 1)$ shares minor diagonal with $(1, 2)$).
+- Col 2: Blocked by `cols[2]`.
+- Col 3: Blocked by `diag1` ($(2, 3)$ shares major diagonal with $(1, 2)$).
+- **DEAD END!** All columns blocked. **BACKTRACK to Row 1!**
+4. **Row 1 (Resume):** Unmark $(1, 2)$. Next candidate Col 3: Safe! Place at $(1, 3)$.
+5. **Row 2:** Col 1 is safe! Place at $(2, 1)$.
+6. **Row 3:** All 4 columns blocked! **DEAD END!** Backtrack all the way to Row 0.
+7. **Row 0 (Resume):** Try $(0, 1)$.
+- Row 1: $(1, 3)$ placed.
+- Row 2: $(2, 0)$ placed.
+- Row 3: $(3, 2)$ placed.
+- **GOAL REACHED!** -> Emits **Solution 1: `[1, 3, 0, 2]`**.
+
+### Concise C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class NQueensSolver {
+    int N, solutionsCount = 0;
+    vector<bool> cols, diag1, diag2;
+    vector<string> grid;
+
+    void backtrack(int row) {
+        if (row == N) {
+            solutionsCount++;
+            cout << "Solution " << solutionsCount << ":\n";
+            for (const string& r : grid) cout << "  " << r << "\n";
+            return;
+        }
+        for (int col = 0; col < N; ++col) {
+            int d1 = row - col + N - 1; // Major diagonal \ (always >= 0)
+            int d2 = row + col;         // Minor diagonal /
+            if (cols[col] || diag1[d1] || diag2[d2]) continue;
+
+            grid[row][col] = 'Q';
+            cols[col] = diag1[d1] = diag2[d2] = true;
+
+            backtrack(row + 1);
+
+            grid[row][col] = '.';
+            cols[col] = diag1[d1] = diag2[d2] = false;
+        }
+    }
+
+public:
+    NQueensSolver(int n) : N(n), cols(n, false),
+                           diag1(2 * n - 1, false), diag2(2 * n - 1, false),
+                           grid(n, string(n, '.')) {}
+
+    void solve() {
+        backtrack(0);
+        cout << "Total Valid Placements: " << solutionsCount << "\n";
+    }
+};
+
+int main() {
+    int N = 4; // Lab Example: 4x4 Grid
+    NQueensSolver solver(N);
+    solver.solve();
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+Solution 1:
+  .Q..
+  ...Q
+  Q...
+  ..Q.
+Solution 2:
+  ..Q.
+  Q...
+  ...Q
+  .Q..
+Total Valid Placements: 2
+```
+
+### Cheese Code: std::next_permutation Permutation Hack (10 Lines)
+**Why it works in the exam:** Queens in row i placed at col p[i] guarantees 1 queen per row and column automatically! We only need to check diagonal collisions in a quick double loop!
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    int n = 4, count = 0;
+    vector<int> p = {0, 1, 2, 3}; // p[i] = col of queen in row i
+    do {
+        bool ok = true;
+        for (int i = 0; i < n && ok; ++i)
+            for (int j = i + 1; j < n; ++j)
+                if (abs(i - j) == abs(p[i] - p[j])) ok = false;
+        if (ok) {
+            count++;
+            cout << "Sol " << count << ": ";
+            for (int x : p) cout << x << " ";
+            cout << "\n";
+        }
+    } while (next_permutation(p.begin(), p.end()));
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+Sol 1: 1 3 0 2 
+Sol 2: 2 0 3 1
+```
+
+### Silly Mistakes & Traps: N-Queens
+1. **Negative Index in Diagonal Array:** The major diagonal difference `row - col` can be negative (e.g. $0 - 3 = -3$). Writing `diag1[row - col]` causes an out-of-bounds memory crash. You MUST add $N - 1$: `int d1 = row - col + N - 1`.
+2. **Forgetting the Backtrack Reset:** Failing to reset `cols[col] = false` after recursing permanently blocks that column for all future branch explorations!
+3. **Passing Grid by Value:** Writing `void backtrack(vector<string> grid, int row)` copies $N$ strings at every single recursion step, exploding time and memory. ALWAYS pass by reference or declare as class/global members.
+
+**Complexity:** best O(N!) · average O(N!) · worst O(N!) · auxiliary space O(N) recursion stack & state vectors  
+**Recurrence:** Upper bounded by N! permutations checked against pruning constraints

@@ -216,3 +216,154 @@ int solveBipartiteMatching(int N1, int N2, const vector<pair<int, int>>& matchin
   - All original outgoing edges from $v$ now leave $v_{\text{out}}$.
   - Source and sink can be given $C_s = C_t = \infty$.
   - Solve standard Max Flow on the transformed network.
+
+---
+
+# FAT Lab-Exam Version & Your Lab Programs (BCSE204P, Dr. Sakthivel R)
+
+Every program below was extracted from your lab reports / FAT guide, compiled with `g++ -std=c++17 -Wall -O2`, and run; outputs shown are the real program output.
+
+## Lab questions & verified answers
+
+| Lab question | Scenario & input data | Verified answer |
+|---|---|---|
+| Lab 8 Q2 | Evacuation: S→A 10, S→B 8, A→C 5, A→B 4, B→C 6, B→D 3, C→T 7, D→T 5 | paths S-A-C-T 5, S-B-C-T 2, S-B-D-T 3 → **10 people/hour** |
+
+## Your lab-report programs
+
+### Your Lab 8 Q2 program (Ford-Fulkerson)
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <climits>
+#include <string>
+
+using namespace std;
+
+const int V = 6;
+
+// Helper function to map node indices to character labels
+string getNodeLabel(int i) {
+    string labels[] = {"S", "A", "B", "C", "D", "T"};
+    return labels[i];
+}
+
+// Breadth-First Search (BFS) to find an augmenting path in the residual graph
+bool bfs(int rGraph[V][V], int s, int t, int parent[]) {
+    vector<bool> visited(V, false);
+    queue<int> q;
+    q.push(s);
+    visited[s] = true;
+    parent[s] = -1;
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+
+        for (int v = 0; v < V; v++) {
+            if (!visited[v] && rGraph[u][v] > 0) {
+                if (v == t) {
+                    parent[v] = u;
+                    return true;
+                }
+                q.push(v);
+                visited[v] = true;
+                parent[v] = u;
+            }
+        }
+    }
+    return false;
+}
+
+// Ford-Fulkerson algorithm function
+int fordFulkerson(int graph[V][V], int s, int t) {
+    int u, v;
+
+    // Create a residual graph and initialize residual capacities with original capacities
+    int rGraph[V][V];
+    for (u = 0; u < V; u++) {
+        for (v = 0; v < V; v++) {
+            rGraph[u][v] = graph[u][v];
+        }
+    }
+
+    int parent[V];
+    int max_flow = 0;
+    int iteration = 1;
+
+    cout << "=== Augmentation Steps ===\n";
+
+    // Augment the flow while an augmenting path exists from source to sink
+    while (bfs(rGraph, s, t, parent)) {
+        int path_flow = INT_MAX;
+
+        // Find the bottleneck capacity along the BFS path
+        for (v = t; v != s; v = parent[v]) {
+            u = parent[v];
+            path_flow = min(path_flow, rGraph[u][v]);
+        }
+
+        // Reconstruct path for printing
+        vector<int> path;
+        for (v = t; v != s; v = parent[v]) {
+            path.push_back(v);
+        }
+        path.push_back(s);
+        reverse(path.begin(), path.end());
+
+        cout << "Iteration " << iteration++ << ": Path ";
+        for (size_t i = 0; i < path.size(); i++) {
+            cout << getNodeLabel(path[i]) << (i + 1 < path.size() ? " -> " : "");
+        }
+        cout << " | Bottleneck: " << path_flow << "\n";
+
+        // Update residual capacities of the edges and reverse edges
+        for (v = t; v != s; v = parent[v]) {
+            u = parent[v];
+            rGraph[u][v] -= path_flow;
+            rGraph[v][u] += path_flow;
+        }
+
+        max_flow += path_flow;
+    }
+
+    return max_flow;
+}
+
+int main() {
+    // Node mapping: S=0, A=1, B=2, C=3, D=4, T=5
+    int graph[V][V] = {0};
+
+    // Capacity definitions
+    graph[0][1] = 10; // S -> A
+    graph[0][2] = 8;  // S -> B
+    graph[1][3] = 5;  // A -> C
+    graph[1][2] = 4;  // A -> B
+    graph[2][3] = 6;  // B -> C
+    graph[2][4] = 3;  // B -> D
+    graph[3][5] = 7;  // C -> T
+    graph[4][5] = 5;  // D -> T
+
+    int source = 0; // S
+    int sink = 5;   // T
+
+    int max_flow = fordFulkerson(graph, source, sink);
+
+    cout << "\nMaximum Evacuation Flow Rate: " << max_flow << " people per hour\n";
+
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+=== Augmentation Steps ===
+Iteration 1: Path S -> A -> C -> T | Bottleneck: 5
+Iteration 2: Path S -> B -> C -> T | Bottleneck: 2
+Iteration 3: Path S -> B -> D -> T | Bottleneck: 3
+
+Maximum Evacuation Flow Rate: 10 people per hour
+```

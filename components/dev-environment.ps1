@@ -62,23 +62,25 @@ function Install-Rust {
     $zigExe = Join-Path $Target "dev\zig\zig.exe"
     $wrapperPath = Join-Path $rustDir "zigcc-linker.cmd"
     Set-Content -Path $wrapperPath -Value "@echo off`r`n`"$zigExe`" cc %*"
+    # CRITICAL: Forward slashes are required in TOML to avoid invalid escape sequence errors in Windows paths
+    $wrapperPathForward = $wrapperPath -replace '\\', '/'
     Set-Content -Path (Join-Path $rustDir "config.toml") -Value @"
 [target.$triple]
-linker = "$wrapperPath"
+linker = "$wrapperPathForward"
 "@
     Write-Host "  installed to dev\rust\ (linker: zig cc, no system cc/MSVC needed)"
 }
 
 function Install-Node {
     Write-Host "== Node.js + npm (React via 'npm create vite@latest') =="
-    $index = (Invoke-WebRequest -Uri "https://nodejs.org/dist/index.json" -UseBasicParsing).Content | ConvertFrom-Json
+    $index = (Invoke-WebRequest -Uri "https://nodejs.org/dist/index.json" -UseBasicParsing -Headers @{ "User-Agent" = "PortableAgentToolkit" }).Content | ConvertFrom-Json
     $lts = ($index | Where-Object { $_.lts -ne $false })[0]
     $version = $lts.version
     Write-Host "  version $version"
     $fname = "node-$version-win-x64.zip"
     $url = "https://nodejs.org/dist/$version/$fname"
-    $shaContent = (Invoke-WebRequest -Uri "https://nodejs.org/dist/$version/SHASUMS256.txt" -UseBasicParsing).Content
-    $sha = ($shaContent -split "`n" | Where-Object { $_ -match [regex]::Escape($fname) + '$' }) -replace '\s.*',''
+    $shaContent = (Invoke-WebRequest -Uri "https://nodejs.org/dist/$version/SHASUMS256.txt" -UseBasicParsing -Headers @{ "User-Agent" = "PortableAgentToolkit" }).Content
+    $sha = ($shaContent -split "\r?\n" | Where-Object { $_ -match [regex]::Escape($fname) }) -replace '\s.*',''
     $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ([System.IO.Path]::GetRandomFileName())
     New-Item -ItemType Directory -Path $tmp | Out-Null
     Get-DownloadVerify -Url $url -Dest (Join-Path $tmp $fname) -ExpectedSha256 $sha
@@ -92,7 +94,7 @@ function Install-Node {
 
 function Install-Python {
     Write-Host "== Python (python-build-standalone) =="
-    $release = Invoke-RestMethod -Uri "https://api.github.com/repos/astral-sh/python-build-standalone/releases/latest" -UseBasicParsing
+    $release = Invoke-RestMethod -Uri "https://api.github.com/repos/astral-sh/python-build-standalone/releases/latest" -UseBasicParsing -Headers @{ "User-Agent" = "PortableAgentToolkit" }
     $asset = $release.assets | Where-Object { $_.name -match '^cpython-3\.13\.\d+\+\d+-x86_64-pc-windows-msvc-install_only\.tar\.gz$' } | Select-Object -First 1
     if (-not $asset) { Write-Host "Could not find a matching Python build" -ForegroundColor Red; return }
     Write-Host "  $($asset.name)"

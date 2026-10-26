@@ -10,14 +10,14 @@ covered," never guess.
 
 ## Why tool-call retrieval instead of just stuffing context
 
-All 19 topics together run to tens of thousands of tokens. Loading all of it on
+All 38 topics together run to tens of thousands of tokens. Loading all of it on
 every turn burns a large chunk of the (already tight, tool-schema-heavy)
 context budget on irrelevant material for most questions. Instead, the
 agent calls `rag-search.sh "<query>"` through its existing `shell` tool only
 when the question is actually about one of these topics, and gets back just
 that one topic's content (roughly 1-3K tokens).
 
-## Corpus (19 topics, all C++, every concrete algorithm compiled and run)
+## Corpus (38 topics, all C++, every complete program compiled and run)
 
 | Topic | Category | Key Elements & Twists |
 |---|---|---|
@@ -39,11 +39,32 @@ that one topic's content (roughly 1-3K tokens).
 | Minimum Spanning Tree (Kruskal & Prim) | Graph algorithms | Kruskal with DSU (path compression & rank), Prim with min-heap, Mandatory & Forbidden cables, Strictly Second Best MST |
 | Floyd-Warshall APSP | Graph algorithms | $O(V^3)$ DP (outermost $k$ loop), path reconstruction matrix, negative cycle detection (-INF marking), widest path / bottleneck capacity, transitive closure |
 | Johnson's Algorithm (Sparse APSP) | Graph algorithms | 5 execution steps: synthetic source $s$, Bellman-Ford potential $h[v]$, non-negative reweighting $\hat{w}(u, v)$, $V \times$ Dijkstra |
+| Bellman-Ford SSSP | Graph algorithms | Handles negative edge weights, $V-1$ relaxation passes, negative cycle detection, bounded hops |
+| Ford-Fulkerson Method | Network flow | Residual graph $G_f$, augmenting path DFS, bottleneck capacity, Max-Flow Min-Cut theorem, min-cut extraction |
+| Edmonds-Karp Algorithm | Network flow | BFS shortest augmenting paths in $O(V E^2)$, edge-disjoint paths (Menger's theorem), multi-source/sink |
+| Line Segments & Sweeping Lines | Computational geometry | Cross-product turn test, CLRS intersection test, exact coordinates, Bentley-Ottmann, Shamos-Hoey, Orthogonal sweep line via BIT |
+| Convex Hull (Graham & Jarvis) | Computational geometry | Andrew's Monotone Chain (Graham's Scan) $O(n \log n)$, Jarvis' March $O(nh)$, Chan's algorithm $O(n \log h)$, Rotating Calipers diameter, collinear points |
 | PAT-2 Twist Detection & Complexity Matrix | Exam reference | Master complexity table, 30-second keyword translation table, and pre-flight zero-mark avoidance checklist |
+| Activity Selection | Greedy | Earliest-finish-time greedy, Lab 1 program |
+| Karatsuba Multiplication | Divide and conquer | 3 recursive products, $O(n^{1.585})$ |
+| K-Way Merge | Divide and conquer | Min-heap $O(N \log K)$ vs K-pointer scan |
+| Matrix Chain Multiplication | Dynamic programming | $O(n^3)$ table + parenthesization |
+| 0/1 Knapsack (DP) | Dynamic programming | $O(nW)$ table with item reconstruction |
+| Longest Common Subsequence | Dynamic programming | $O(mn)$ table + backtracking (token & char sequences) |
+| 0/1 Knapsack (LCBB) | Branch and bound | Best-first search with fractional upper bound |
+| Closest Pair of Points | Computational geometry | Divide & conquer strip check, AGV hazard variant |
+| NP Certificate Verification | NP-completeness | Polynomial-time verifiers (job selection, spanning network + budget) |
+| Greedy Set Cover | Approximation | Cost per newly covered element, $H_n$ factor |
+| Vertex Cover 2-Approximation | Approximation | Maximal matching, both endpoints |
+| Randomized Sampling | Randomized | Sampling without replacement, fixed seed, Monte Carlo vs Las Vegas |
+| FAT Complexity Master Table | Exam reference | Best/avg/worst time + space for every lab algorithm |
+| FAT Exam Traps & Cheese Codes | Exam reference | C++ pitfalls + emergency shortcut programs |
 
-Every concrete algorithm's C++ code was compiled with `g++ -std=c++17 -Wall
+Every complete C++ program in the corpus was compiled with `g++ -std=c++17 -Wall
 -O2` and run against known textbook and lab test cases before being written into the
-corpus.
+corpus. The FAT-guide (Labs 1-11) material was merged into the matching topics, each with
+a table of the user's lab questions and their verified answers. Shown outputs are real
+program output, and the places where the guide's stated output was wrong are corrected inline.
 
 **Deliberate categorization choices, made for correctness, not just
 organization**: maximum subarray implements the actual divide-and-conquer
@@ -52,9 +73,9 @@ those are genuinely different algorithms, and Kadane's is included in the
 same file as a clearly-labeled second method for comparison rather than
 being conflated with the D&C one. Fractional knapsack's entry explicitly
 states it is **not** the 0/1 knapsack problem (different problem, needs
-dynamic programming, greedy doesn't give the optimal answer) — and
-`rag-search.sh` has an explicit guard so a `0/1 knapsack` query gets a
-direct "not covered" response instead of the (wrong) fractional solution.
+dynamic programming, greedy doesn't give the optimal answer) and points to the
+separate `knapsack_01_dp` / `knapsack_01_lcbb` topics. A bare `knapsack` query is
+deliberately `AMBIGUOUS` so the agent has to pick the right one.
 
 ## Retrieval: deterministic keyword/alias matching, not embeddings
 
@@ -103,6 +124,6 @@ verifying the instruction text was actually present. No amount of
 `AGENTS.md` prompt tuning fully closes this gap on small (3B-30B-class)
 local models — it's a real characteristic of the model, not a to-do item.
 
-**Practical takeaway**: for the 19 topics this corpus actually covers,
+**Practical takeaway**: for the topics this corpus actually covers,
 grounding is reliable. For anything adjacent but not in the corpus, there's
 no hard guarantee the model checks first rather than answering from memory.

@@ -1,15 +1,19 @@
 # Usage: .\dev.bat
 # Drops you into a subshell with the portable C/C++ (zig), Rust, Node.js/npm,
 # and Python toolchains on PATH. Mirrors dev.sh. Untested on Windows.
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $DevDir = Join-Path $ScriptDir "dev"
+if (-not (Test-Path $DevDir)) {
+    $parent = Split-Path -Parent $ScriptDir
+    if (Test-Path (Join-Path $parent "dev")) { $DevDir = Join-Path $parent "dev" }
+}
 
 if (-not (Test-Path $DevDir)) {
-    Write-Host "No dev\ directory found at $DevDir -- run install.ps1 with the dev environment component selected first."
+    Write-Host "No dev\ directory found at $DevDir -- run install.ps1 with the dev environment component selected first." -ForegroundColor Red
     exit 1
 }
 
-$env:Path = "$DevDir\zig;$DevDir\rust\bin;$DevDir\node;$DevDir\python;$env:Path"
+$env:Path = "$DevDir\zig;$DevDir\rust\bin;$DevDir\node;$DevDir\python;$DevDir\python\Scripts;$env:Path"
 $env:CARGO_HOME = Join-Path $DevDir "rust"
 $env:RUSTUP_HOME = Join-Path $DevDir "rust"
 $env:npm_config_cache = Join-Path $DevDir "node\cache"

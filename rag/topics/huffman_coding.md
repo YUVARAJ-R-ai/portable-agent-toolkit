@@ -141,3 +141,150 @@ Note the most frequent character (`'a'`, freq 5) gets the shortest code
 equal-frequency symbols (`'r'` and `'b'`, both freq 2) depend on priority
 queue tie-breaking and can legitimately differ between correct
 implementations; the *lengths* and the total encoded size are what matter.
+
+---
+
+# FAT Lab-Exam Version & Your Lab Programs (BCSE204P, Dr. Sakthivel R)
+
+Every program below was extracted from your lab reports / FAT guide, compiled with `g++ -std=c++17 -Wall -O2`, and run; outputs shown are the real program output.
+
+## Lab questions & verified answers
+
+| Lab question | Scenario & input data | Verified answer |
+|---|---|---|
+| Lab 3 Q2 | CAN-bus telemetry: I=50000, S=25000, P=12000, A=8000, W=4000, C=1000 (100,000 frames) | Codes I=0, S=10, P=110, A=1111, W=11101, C=11100 → **193,000 bits** vs 300,000 bits fixed 3-bit |
+
+**Guide corrections:** (1) the FAT guide's "cheese code" comment claims 174000 bits. The real total for the lab frequencies is **193000** (depths 1,2,3,4,5,5). (2) The guide's sample I/O box uses the CLRS frequencies 45/13/12/16/9/5 (224 bits), not the lab frequencies used by its code. Use the program outputs below.
+
+Shortcut: total encoded bits = sum of all internal-node weights created while merging (5000+13000+25000+50000+100000 = 193000).
+
+## Huffman Coding (Optimal Prefix-Free Codes)
+
+### Huffman Coding
+**Lab scenario:** CAN Bus Vehicle Telemetry Compression (I, S, P, A, W, C status codes)
+
+Given a set of characters and their frequencies, construct a binary tree of minimal external path weight such that more frequent characters receive shorter variable-length prefix-free codes.
+
+**Greedy Property:** The two symbols with the lowest frequencies must appear as sibling leaf nodes at the deepest level of the optimal code tree.
+
+### Algorithm: Huffman
+```python
+Huffman(C, f, n):
+    Q = MinPriorityQueue(C, f)   # Leaf nodes: character, frequency
+
+    FOR i = 1 TO n - 1:
+        z = allocate_node()
+        z.left = Q.extract_min()
+        z.right = Q.extract_min()
+        z.freq = z.left.freq + z.right.freq
+        Q.insert(z)
+
+    RETURN Q.extract_min()       # Root of optimal prefix-free tree
+```
+
+### Concise C++ Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string>
+#include <map>
+using namespace std;
+
+struct Node {
+    char ch;
+    int freq;
+    Node *left, *right;
+    Node(char c, int f, Node* l = nullptr, Node* r = nullptr)
+        : ch(c), freq(f), left(l), right(r) {}
+};
+
+struct Compare {
+    bool operator()(Node* a, Node* b) { return a->freq > b->freq; } // Min-heap!
+};
+
+void buildCodes(Node* root, string code, map<char, string>& codes) {
+    if (!root) return;
+    if (!root->left && !root->right) {
+        codes[root->ch] = code;
+        return;
+    }
+    buildCodes(root->left, code + "0", codes);
+    buildCodes(root->right, code + "1", codes);
+}
+
+int main() {
+    vector<char> chars = {'I', 'S', 'P', 'A', 'W', 'C'};
+    vector<int> freq = {50000, 25000, 12000, 8000, 4000, 1000};
+
+    priority_queue<Node*, vector<Node*>, Compare> pq;
+    for (size_t i = 0; i < chars.size(); ++i)
+        pq.push(new Node(chars[i], freq[i]));
+
+    while (pq.size() > 1) {
+        Node* left = pq.top(); pq.pop();
+        Node* right = pq.top(); pq.pop();
+        pq.push(new Node('$', left->freq + right->freq, left, right));
+    }
+
+    map<char, string> huffmanCodes;
+    buildCodes(pq.top(), "", huffmanCodes);
+
+    cout << "--- Huffman Codes ---\n";
+    long long totalBits = 0;
+    for (size_t i = 0; i < chars.size(); ++i) {
+        cout << chars[i] << " : " << huffmanCodes[chars[i]] << "\n";
+        totalBits += (long long)freq[i] * huffmanCodes[chars[i]].length();
+    }
+    cout << "Total Encoded Size: " << totalBits << " bits\n";
+    cout << "Fixed (3-bit) Size: 300000 bits\n";
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+--- Huffman Codes ---
+I : 0
+S : 10
+P : 110
+A : 1111
+W : 11101
+C : 11100
+Total Encoded Size: 193000 bits
+Fixed (3-bit) Size: 300000 bits
+```
+
+### Cheese Code: Calculating Total Encoded Bits Without Building Trees
+**Why it works in the exam:** The total length of encoded text equals the sum of frequencies of all internal nodes in the Huffman tree! No string or tree manipulation needed!
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    priority_queue<long long, vector<long long>, greater<long long>> pq;
+    for (int f : {50000, 25000, 12000, 8000, 4000, 1000}) pq.push(f);
+    long long totalBits = 0;
+    while (pq.size() > 1) {
+        long long a = pq.top(); pq.pop();
+        long long b = pq.top(); pq.pop();
+        totalBits += (a + b);
+        pq.push(a + b);
+    }
+    cout << "Total Encoded Bits: " << totalBits << "\n"; // Outputs exact 174000 bits!
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+Total Encoded Bits: 193000
+```
+
+### Silly Mistakes & Traps: Huffman Coding
+1. **C++ Priority Queue Comparator Direction:** In C++ STL, `priority_queue` is a **MAX-HEAP** by default. If you write `a->freq < b->freq`, it pops the **LARGEST** frequencies first! You MUST write `a->freq > b->freq` to make it a min-heap.
+2. **Base Case Leaf Check:** Check `!root->left && !root->right`. Do not compare `root->ch != '$'` because internal dummy characters might clash.
+3. **Integer Overflow on Large Frequencies:** In the lab problem, frequencies reach 50,000 and total bit calculations exceed $10^8$. Use `long long` for total bit counters!
+
+**Complexity:** best O(n log n) · average O(n log n) · worst O(n log n) · auxiliary space O(n)  
+**Recurrence:** T(n) = sum_(i=1)^(n-1) O(log i) = O(n log n)

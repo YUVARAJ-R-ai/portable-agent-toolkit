@@ -7,9 +7,9 @@ item). Category: [Greedy algorithm](greedy_overview.md).
 > **This is NOT the 0/1 knapsack problem.** 0/1 knapsack (items must be
 > taken whole or not at all) is a *different* problem that needs dynamic
 > programming — greedy does **not** give the optimal answer for 0/1
-> knapsack. This corpus only covers the fractional version. If a question is
-> actually about 0/1 knapsack, say so rather than presenting this greedy
-> solution as the answer.
+> knapsack. If a question is actually about 0/1 knapsack, do NOT use this
+> greedy solution: look up `knapsack_01_dp` (DP table) or `knapsack_01_lcbb`
+> (branch and bound) instead.
 
 ## Idea
 

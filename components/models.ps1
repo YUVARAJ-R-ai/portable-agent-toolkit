@@ -10,7 +10,16 @@ param(
 $config = Get-Content $ConfigPath -Raw | ConvertFrom-Json
 New-Item -ItemType Directory -Force -Path (Join-Path $Target "models") | Out-Null
 
-foreach ($id in $ModelIds) {
+$cleanModelIds = @()
+foreach ($m in $ModelIds) {
+    if ($m) {
+        $cleanModelIds += ($m -split ",")
+    }
+}
+
+foreach ($id in $cleanModelIds) {
+    $id = $id.Trim()
+    if (-not $id) { continue }
     $entry = $config.models | Where-Object { $_.id -eq $id }
     if (-not $entry) { Write-Host "Unknown model id '$id'" -ForegroundColor Red; exit 1 }
 

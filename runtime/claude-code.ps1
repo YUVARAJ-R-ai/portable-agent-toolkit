@@ -6,13 +6,25 @@ param(
     [string[]]$ClaudeArgs
 )
 
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+
 $ClaudeExe = Join-Path $ScriptDir "bin\windows\claude-code.exe"
+if (-not (Test-Path $ClaudeExe)) { $ClaudeExe = Join-Path $ScriptDir "bin\claude-code.exe" }
+if (-not (Test-Path $ClaudeExe)) {
+    $parent = Split-Path -Parent $ScriptDir
+    if (Test-Path (Join-Path $parent "bin\windows\claude-code.exe")) { $ClaudeExe = Join-Path $parent "bin\windows\claude-code.exe" }
+    elseif (Test-Path (Join-Path $parent "bin\claude-code.exe")) { $ClaudeExe = Join-Path $parent "bin\claude-code.exe" }
+}
+
 $CcDir = Join-Path $ScriptDir "claude-code"
+if (-not (Test-Path $CcDir)) {
+    $parent = Split-Path -Parent $ScriptDir
+    if (Test-Path (Join-Path $parent "claude-code")) { $CcDir = Join-Path $parent "claude-code" }
+}
 $TokenFile = Join-Path $CcDir "token.txt"
 
 if (-not (Test-Path $ClaudeExe)) {
-    Write-Host "Claude Code isn't installed. Run install.ps1 with the Claude Code component selected first."
+    Write-Host "Claude Code isn't installed. Run install.ps1 with the Claude Code component selected first." -ForegroundColor Red
     exit 1
 }
 

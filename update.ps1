@@ -1,7 +1,7 @@
 # Usage: .\update.bat <target_dir>
 # Mirrors update.sh. Untested (no Windows hardware available).
 param([Parameter(Mandatory)][string]$Target)
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 . "$ScriptDir\lib\common.ps1"
 
 $versionsFile = Join-Path $Target ".versions.json"
@@ -10,19 +10,30 @@ if (-not (Test-Path $versionsFile)) {
     exit 1
 }
 $manifest = Get-Content $versionsFile -Raw | ConvertFrom-Json
+
 $GumExe = Join-Path $Target "bin\windows\gum-windows-amd64.exe"
+if (-not (Test-Path $GumExe)) { $GumExe = Join-Path $Target "bin\windows\gum.exe" }
+if (-not (Test-Path $GumExe)) { $GumExe = Join-Path $Target "bin\gum.exe" }
+$HasGum = $false
+if ($GumExe -and (Test-Path $GumExe)) {
+    try { & $GumExe --version 2>&1 | Out-Null; $HasGum = $true } catch { $HasGum = $false }
+}
 
 Write-Host "Checking for updates ..."
 $repos = @{
     "koboldcpp" = "LostRuins/koboldcpp"
-    "opencode"  = "sst/opencode"
+    "opencode"  = "anomalyco/opencode"
     "goose"     = "block/goose"
     "gum"       = "charmbracelet/gum"
     "jq"        = "jqlang/jq"
 }
 foreach ($name in $repos.Keys) {
-    $latest = Get-LatestGithubRelease -Repo $repos[$name]
-    Write-Host "  $name`: latest is $latest (re-run components\core-agent-stack.ps1 to refresh)"
+    try {
+        $latest = Get-LatestGithubRelease -Repo $repos[$name]
+        Write-Host "  $name`: latest is $latest"
+    } catch {
+        Write-Host "  $name`: could not fetch latest release tag" -ForegroundColor Yellow
+    }
 }
 
 $choices = @("Runtime scripts & RAG corpus (refresh from toolkit repo)", "Core agent stack (koboldcpp, OpenCode, Goose, gum, jq)")
@@ -30,14 +41,40 @@ if ($manifest.components -match "dev") { $choices += "Dev environment (zig, rust
 if ($manifest.components -match "claude-code") { $choices += "Claude Code" }
 if ($manifest.components -match "agy-cli") { $choices += "Agy CLI" }
 
-$selected = & $GumExe choose --no-limit --header "Select components to update/refresh:" `
-    --cursor.foreground 212 --selected.foreground 212 $choices
+$selected = ""
+if ($HasGum) {
+    $selected = & $GumExe choose --no-limit --header "Select components to update/refresh:" `
+        --cursor.foreground 212 --selected.foreground 212 $choices
+} else {
+    Write-Host "Select components to update/refresh:"
+    for ($i = 0; $i -lt $choices.Count; $i++) {
+        Write-Host "  $($i + 1). $($choices[$i])"
+    }
+    $in = Read-Host "Enter numbers separated by comma (e.g. 1,2), or press enter for all"
+    if (-not $in) {
+        $selected = $choices -join "`n"
+    } else {
+        $nums = $in -split ","
+        $selArr = @()
+        foreach ($n in $nums) {
+            $idx = [int]$n.Trim() - 1
+            if ($idx -ge 0 -and $idx -lt $choices.Count) { $selArr += $choices[$idx] }
+        }
+        $selected = $selArr -join "`n"
+    }
+}
+
 if (-not $selected) { Write-Host "Nothing selected -- no changes made."; exit 0 }
 
 if ($selected -match "Runtime scripts") {
     Write-Host "== Deploying runtime scripts, RAG corpus, and config =="
     Copy-Item "$ScriptDir\runtime\*" $Target -Recurse -Force
-    Copy-Item "$ScriptDir\rag" (Join-Path $Target "rag") -Recurse -Force
+    New-Item -ItemType Directory -Force -Path (Join-Path $Target "rag") | Out-Null
+    Copy-Item "$ScriptDir\rag\*" (Join-Path $Target "rag") -Recurse -Force
+    New-Item -ItemType Directory -Force -Path (Join-Path $Target "goose-config") | Out-Null
+    if (Test-Path "$ScriptDir\goose-config") {
+        Copy-Item "$ScriptDir\goose-config\*" (Join-Path $Target "goose-config") -Recurse -Force
+    }
     New-Item -ItemType Directory -Force -Path (Join-Path $Target "config") | Out-Null
     Copy-Item "$ScriptDir\config\models.json" (Join-Path $Target "config\models.json") -Force
 }
@@ -71,5 +108,6 @@ $manifest.versions = @{
     jq        = [string]$jqVer
     agy       = [string]$agyVer
 }
-$manifest | ConvertTo-Json -Depth 5 | Set-Content $versionsFile
-Write-Host "Update complete."
+$manifestJson = $manifest | ConvertTo-Json -Depth 5
+[System.IO.File]::WriteAllText($versionsFile, $manifestJson, (New-Object System.Text.UTF8Encoding $false))
+Write-Host "Update complete." -ForegroundColor Green

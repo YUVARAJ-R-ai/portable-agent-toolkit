@@ -79,7 +79,7 @@ CHECK_ONE() {
 
 UPDATES_AVAILABLE=0
 CHECK_ONE "koboldcpp" "LostRuins/koboldcpp" "$(echo "$MANIFEST" | "$JQ" -r '.versions.koboldcpp // empty')"
-CHECK_ONE "opencode"  "sst/opencode"        "$(echo "$MANIFEST" | "$JQ" -r '.versions.opencode // empty')"
+CHECK_ONE "opencode"  "anomalyco/opencode"  "$(echo "$MANIFEST" | "$JQ" -r '.versions.opencode // empty')"
 CHECK_ONE "goose"     "block/goose"         "$(echo "$MANIFEST" | "$JQ" -r '.versions.goose // empty')"
 CHECK_ONE "gum"       "charmbracelet/gum"   "$(echo "$MANIFEST" | "$JQ" -r '.versions.gum // empty')"
 CHECK_ONE "jq"        "jqlang/jq"           "$(echo "$MANIFEST" | "$JQ" -r '.versions.jq // empty')"
@@ -129,6 +129,10 @@ echo "$SELECTED" | grep -q "Runtime scripts" && {
   cp -r "$SCRIPT_DIR/runtime/." "$TARGET/"
   mkdir -p "$TARGET/rag"
   cp -r "$SCRIPT_DIR/rag/." "$TARGET/rag/"
+  if [ -d "$SCRIPT_DIR/goose-config" ]; then
+    mkdir -p "$TARGET/goose-config"
+    cp -r "$SCRIPT_DIR/goose-config/." "$TARGET/goose-config/"
+  fi
   mkdir -p "$TARGET/config"
   cp "$SCRIPT_DIR/config/models.json" "$TARGET/config/models.json"
   chmod +x "$TARGET"/*.sh 2>/dev/null || true

@@ -10,6 +10,10 @@
 # model without restarting koboldcpp or the orchestrator session.
 # Works on Linux and macOS (auto-detected via `uname`). For Windows, use start.bat.
 # Set VULKAN=1 (e.g. `VULKAN=1 bash start.sh`) to A/B test a GPU path.
+# Windows (Git Bash / MSYS / Cygwin): the Linux binaries in bin/ can't run here, so hand off to the PowerShell twin.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*)
+  exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$(dirname "${BASH_SOURCE[0]}")")\\start.ps1" ${VULKAN:+-Vulkan} "$@" ;;
+esac
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -182,6 +186,10 @@ fi
 cd "$WORKSPACE"
 case "$(echo "$ORCHESTRATOR" | tr '[:upper:]' '[:lower:]')" in
   opencode)
+    # Don't pull the host's ~/.claude/CLAUDE.md + skills into the prompt: on a dev laptop that alone was
+    # ~15K tokens and overflowed the 16K context, so the model never saw the question or the RAG output.
+    OPENCODE_DISABLE_CLAUDE_CODE=1 \
+    OPENCODE_DISABLE_EXTERNAL_SKILLS=1 \
     XDG_CONFIG_HOME="$SCRIPT_DIR/opencode-config" \
     XDG_DATA_HOME="$SCRIPT_DIR/opencode-data" \
     "$OPENCODE_BIN" --model "local/$API_MODEL_NAME"

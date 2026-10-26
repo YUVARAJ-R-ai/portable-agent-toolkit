@@ -41,7 +41,7 @@ case "$OS-$ARCH" in
   mac-x64)     OC_ASSET="opencode-darwin-x64.zip" ;;
   *) echo "No OpenCode build for $OS-$ARCH" >&2; exit 1 ;;
 esac
-OC_URL="$(gh_asset_url "sst/opencode" "$OC_ASSET")"
+OC_URL="$(gh_asset_url "anomalyco/opencode" "$OC_ASSET")"
 [ -z "$OC_URL" ] && { echo "Could not resolve OpenCode download URL" >&2; exit 1; }
 OC_TMP="$(mktemp -d)"
 download_verify "$OC_URL" "$OC_TMP/$OC_ASSET"

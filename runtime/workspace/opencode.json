@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "tools": { "task": false, "todowrite": false, "webfetch": false, "skill": false },
   "provider": {
     "local": {
       "npm": "@ai-sdk/openai-compatible",

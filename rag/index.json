@@ -6,9 +6,39 @@
       "category": "greedy",
       "description": "General idea of greedy algorithms: greedy-choice property, optimal substructure, exchange-argument proofs, when greedy works vs fails",
       "aliases": [
-        "greedy algorithm", "greedy algorithms", "greedy approach", "greedy method",
-        "greedy technique", "greedy strategy", "general greedy idea", "what is greedy",
-        "greedy choice property", "optimal substructure", "exchange argument"
+        "greedy algorithm",
+        "greedy algorithms",
+        "greedy approach",
+        "greedy method",
+        "greedy technique",
+        "greedy strategy",
+        "general greedy idea",
+        "what is greedy",
+        "greedy choice property",
+        "optimal substructure",
+        "exchange argument"
+      ]
+    },
+    {
+      "id": "activity_selection",
+      "file": "activity_selection.md",
+      "category": "greedy",
+      "description": "Activity selection / interval scheduling: greedy by earliest finish time (Lab 1, FAT Module 1)",
+      "aliases": [
+        "activity selection",
+        "activity selection problem",
+        "activity scheduling",
+        "interval scheduling",
+        "maximum compatible activities",
+        "non overlapping activities",
+        "non-overlapping intervals",
+        "earliest finish time",
+        "seminar hall",
+        "meeting room scheduling",
+        "single meeting room",
+        "freelance video",
+        "video editor gigs",
+        "event scheduling greedy"
       ]
     },
     {
@@ -17,9 +47,19 @@
       "category": "greedy",
       "description": "Huffman coding: optimal prefix codes from symbol frequencies, greedy tree-merging algorithm",
       "aliases": [
-        "huffman", "huffman coding", "huffman encoding", "huffman tree", "huffman code",
-        "optimal prefix code", "prefix free code", "variable length encoding",
-        "entropy encoding tree", "minimum expected code length"
+        "huffman",
+        "huffman coding",
+        "huffman encoding",
+        "huffman tree",
+        "huffman code",
+        "optimal prefix code",
+        "prefix free code",
+        "variable length encoding",
+        "entropy encoding tree",
+        "minimum expected code length",
+        "can bus telemetry",
+        "telemetry compression",
+        "diagnostic status codes"
       ]
     },
     {
@@ -28,8 +68,12 @@
       "category": "greedy",
       "description": "Fractional knapsack: greedy solution sorting by value/weight ratio, items divisible",
       "aliases": [
-        "fractional knapsack", "fraction knapsack", "knapsack fractional",
-        "greedy knapsack", "value weight ratio knapsack", "divisible items knapsack",
+        "fractional knapsack",
+        "fraction knapsack",
+        "knapsack fractional",
+        "greedy knapsack",
+        "value weight ratio knapsack",
+        "divisible items knapsack",
         "knapsack"
       ]
     },
@@ -39,8 +83,13 @@
       "category": "divide_and_conquer",
       "description": "General idea of divide and conquer: divide/conquer/combine, recurrences, Master theorem",
       "aliases": [
-        "divide and conquer", "divide & conquer", "divide-and-conquer", "d and c algorithm",
-        "master theorem", "recurrence relation algorithm", "general divide and conquer idea",
+        "divide and conquer",
+        "divide & conquer",
+        "divide-and-conquer",
+        "d and c algorithm",
+        "master theorem",
+        "recurrence relation algorithm",
+        "general divide and conquer idea",
         "what is divide and conquer"
       ]
     },
@@ -50,8 +99,36 @@
       "category": "divide_and_conquer",
       "description": "Maximum subarray sum: divide-and-conquer solution (crossing subarray), plus Kadane's algorithm for comparison",
       "aliases": [
-        "maximum subarray", "max subarray", "maximum subarray sum", "largest sum contiguous subarray",
-        "maximum contiguous sum", "crossing subarray", "kadane", "kadane's algorithm", "kadanes algorithm"
+        "maximum subarray",
+        "max subarray",
+        "maximum subarray sum",
+        "largest sum contiguous subarray",
+        "maximum contiguous sum",
+        "crossing subarray",
+        "kadane",
+        "kadane's algorithm",
+        "kadanes algorithm",
+        "net energy surplus",
+        "solar power station",
+        "high frequency trading profits"
+      ]
+    },
+    {
+      "id": "karatsuba_multiplication",
+      "file": "karatsuba_multiplication.md",
+      "category": "divide_and_conquer",
+      "description": "Karatsuba multiplication: 3 recursive products instead of 4, O(n^1.585) (Lab 3, FAT Module 3)",
+      "aliases": [
+        "karatsuba",
+        "karatsuba multiplication",
+        "karatsuba algorithm",
+        "fast integer multiplication",
+        "large integer multiplication",
+        "big integer multiplication",
+        "multiply large numbers",
+        "divide and conquer multiplication",
+        "cryptographic key signature",
+        "security tokens multiply"
       ]
     },
     {
@@ -60,8 +137,17 @@
       "category": "divide_and_conquer",
       "description": "QuickSort: in-place partition-based divide-and-conquer sort, Lomuto partition scheme",
       "aliases": [
-        "quick sort", "quicksort", "quick-sort", "lomuto partition", "hoare partition",
-        "partition based sort", "pivot sort", "sort", "sorting", "fast sort", "sort fast"
+        "quick sort",
+        "quicksort",
+        "quick-sort",
+        "lomuto partition",
+        "hoare partition",
+        "partition based sort",
+        "pivot sort",
+        "sort",
+        "sorting",
+        "fast sort",
+        "sort fast"
       ]
     },
     {
@@ -70,8 +156,39 @@
       "category": "divide_and_conquer",
       "description": "MergeSort: divide-and-conquer sort with guaranteed O(n log n), merge step",
       "aliases": [
-        "merge sort", "mergesort", "merge-sort", "merging sorted arrays", "stable sort merge",
-        "sort", "sorting", "fast sort", "sort fast"
+        "merge sort",
+        "mergesort",
+        "merge-sort",
+        "merging sorted arrays",
+        "stable sort merge",
+        "sort",
+        "sorting",
+        "fast sort",
+        "sort fast",
+        "stable sort transactions",
+        "financial auditing transactions",
+        "ecu temperatures",
+        "battery temperature readings"
+      ]
+    },
+    {
+      "id": "k_way_merge",
+      "file": "k_way_merge.md",
+      "category": "divide_and_conquer",
+      "description": "K-way merge of K sorted lists/streams with a min-heap in O(N log K) (Lab 2, FAT Module 2)",
+      "aliases": [
+        "k way merge",
+        "k-way merge",
+        "kway merge",
+        "merge k sorted",
+        "merge k sorted lists",
+        "merge k sorted arrays",
+        "merge sorted playlists",
+        "collaborative playlist",
+        "music streaming playlist",
+        "merge sorted streams",
+        "external merge",
+        "multiway merge"
       ]
     },
     {
@@ -80,8 +197,82 @@
       "category": "dynamic_programming",
       "description": "Assembly line scheduling: dynamic programming across two parallel lines with transfer costs",
       "aliases": [
-        "assembly line scheduling", "assembly line programming", "assembly line problem",
-        "assembly line dp", "two assembly lines", "station scheduling", "car chassis assembly line"
+        "assembly line scheduling",
+        "assembly line programming",
+        "assembly line problem",
+        "assembly line dp",
+        "two assembly lines",
+        "station scheduling",
+        "car chassis assembly line",
+        "automotive manufacturing plant",
+        "two parallel assembly lines"
+      ]
+    },
+    {
+      "id": "matrix_chain_multiplication",
+      "file": "matrix_chain_multiplication.md",
+      "category": "dynamic_programming",
+      "description": "Matrix chain multiplication: O(n^3) DP for minimum scalar multiplications + optimal parenthesization (Lab 3, FAT Module 3)",
+      "aliases": [
+        "matrix chain multiplication",
+        "matrix chain",
+        "mcm",
+        "matrix chain order",
+        "optimal parenthesization",
+        "parenthesization",
+        "matrix multiplication order",
+        "minimum scalar multiplications",
+        "scalar multiplications",
+        "3d game engine",
+        "transformation matrices",
+        "rendering pipeline matrices"
+      ]
+    },
+    {
+      "id": "knapsack_01_dp",
+      "file": "knapsack_01_dp.md",
+      "category": "dynamic_programming",
+      "description": "0/1 knapsack (items indivisible) via O(nW) DP table with item reconstruction (Lab 4, FAT Module 4)",
+      "aliases": [
+        "0/1 knapsack",
+        "0-1 knapsack",
+        "01 knapsack",
+        "0 1 knapsack",
+        "zero one knapsack",
+        "zero-one knapsack",
+        "binary knapsack",
+        "knapsack dp",
+        "knapsack dynamic programming",
+        "dynamic programming knapsack",
+        "indivisible items knapsack",
+        "knapsack",
+        "backup drive",
+        "encrypted databases backup",
+        "space probe payload",
+        "payload bay",
+        "venture capital budget",
+        "startup proposals"
+      ]
+    },
+    {
+      "id": "longest_common_subsequence",
+      "file": "longest_common_subsequence.md",
+      "category": "dynamic_programming",
+      "description": "Longest common subsequence (LCS): O(mn) DP table + backtracking to recover the sequence (Lab 4, FAT Module 4)",
+      "aliases": [
+        "longest common subsequence",
+        "lcs",
+        "lcs dp",
+        "lcs algorithm",
+        "common subsequence",
+        "plagiarism detection",
+        "code plagiarism",
+        "function call logs",
+        "ancient manuscripts",
+        "manuscript comparison",
+        "sequence similarity",
+        "dna sequence comparison",
+        "diff algorithm"
       ]
     },
     {
@@ -90,14 +281,47 @@
       "category": "backtracking",
       "description": "N-Queens backtracking: O(1) diagonal conflict lookup, Obstacle cells, Amazon/Super-Queens (Knight attack), Max-Weight B&B pruning, Pre-Fixed Queens, No Three Queens Collinear, K-Queens on N x M",
       "aliases": [
-        "n queens", "n-queens", "nqueens", "backtracking n queens", "n queens backtracking",
-        "eight queens", "8 queens", "four queens", "4 queens",
-        "n queens with obstacles", "damaged solar panels", "defective node matrix", "obstacle queens", "blocked cells queens",
-        "amazon queens", "super queens", "queen knight attack", "amazon super-queens", "radar transmitter queen",
-        "max weight n queens", "weighted board queen", "max profit queens", "branch and bound n queens", "harvested solar power",
-        "pre-fixed queens", "fixed queens", "partial hardware placement", "cryptographic engines",
-        "no three queens collinear", "collinear queens", "cross product collinear", "general linear independence queens",
-        "k queens", "k-queens", "k queens on n x m", "k queens grid", "non-interfering satellites", "non-interfering drones"
+        "n queens",
+        "n-queens",
+        "nqueens",
+        "backtracking n queens",
+        "n queens backtracking",
+        "eight queens",
+        "8 queens",
+        "four queens",
+        "4 queens",
+        "n queens with obstacles",
+        "damaged solar panels",
+        "defective node matrix",
+        "obstacle queens",
+        "blocked cells queens",
+        "amazon queens",
+        "super queens",
+        "queen knight attack",
+        "amazon super-queens",
+        "radar transmitter queen",
+        "max weight n queens",
+        "weighted board queen",
+        "max profit queens",
+        "branch and bound n queens",
+        "harvested solar power",
+        "pre-fixed queens",
+        "fixed queens",
+        "partial hardware placement",
+        "cryptographic engines",
+        "no three queens collinear",
+        "collinear queens",
+        "cross product collinear",
+        "general linear independence queens",
+        "k queens",
+        "k-queens",
+        "k queens on n x m",
+        "k queens grid",
+        "non-interfering satellites",
+        "non-interfering drones",
+        "hardware security chip",
+        "em interference",
+        "security engines placement"
       ]
     },
     {
@@ -106,12 +330,39 @@
       "category": "branch_and_bound",
       "description": "Job Selection with Deadlines and Profits (Branch & Bound): canonical single-machine, optimistic upper bound, Variable Durations knapsack relaxation, Rejection Penalties effective profit, Release Times [r_i, d_i]",
       "aliases": [
-        "job selection", "job selection with deadlines and profits", "job sequencing with deadlines", "deadline scheduling",
-        "profit deadline branch and bound", "job selection b&b", "emergency medical drop-offs", "satellite missions", "unit deadlines",
-        "variable duration jobs", "job selection variable processing time", "knapsack scheduling hybrid", "multi-unit duration jobs",
-        "job selection rejection penalties", "rejection penalties", "late fines", "effective profit", "delay fine",
-        "resource allocation", "lunar rover", "computational tasks", "task scheduling",
-        "job selection release times", "release times and deadlines", "release windows", "optimistic upper bound job selection"
+        "job selection",
+        "job selection with deadlines and profits",
+        "job sequencing with deadlines",
+        "deadline scheduling",
+        "profit deadline branch and bound",
+        "job selection b&b",
+        "emergency medical drop-offs",
+        "satellite missions",
+        "unit deadlines",
+        "variable duration jobs",
+        "job selection variable processing time",
+        "knapsack scheduling hybrid",
+        "multi-unit duration jobs",
+        "job selection rejection penalties",
+        "rejection penalties",
+        "late fines",
+        "effective profit",
+        "delay fine",
+        "resource allocation",
+        "lunar rover",
+        "computational tasks",
+        "task scheduling",
+        "job selection release times",
+        "release times and deadlines",
+        "release windows",
+        "optimistic upper bound job selection",
+        "emergency medical equipment delivery",
+        "semiconductor production orders",
+        "satellite maintenance missions",
+        "cloud computing jobs",
+        "film production scenes",
+        "disaster management deliveries",
+        "job sequencing"
       ]
     },
     {
@@ -120,9 +371,39 @@
       "category": "branch_and_bound",
       "description": "Job Assignment Problem via Least Cost Branch and Bound (LCBB): N workers to N jobs cost matrix, row-reduction lower bound, min-heap priority queue",
       "aliases": [
-        "job assignment", "job assignment problem", "job assignment lcbb", "least cost branch and bound",
-        "assignment problem lcbb", "n workers n jobs", "worker job cost matrix",
-        "lcbb assignment", "assignment lower bound", "row reduction lower bound", "min cost job assignment"
+        "job assignment",
+        "job assignment problem",
+        "job assignment lcbb",
+        "least cost branch and bound",
+        "assignment problem lcbb",
+        "n workers n jobs",
+        "worker job cost matrix",
+        "lcbb assignment",
+        "assignment lower bound",
+        "row reduction lower bound",
+        "min cost job assignment"
+      ]
+    },
+    {
+      "id": "knapsack_01_lcbb",
+      "file": "knapsack_01_lcbb.md",
+      "category": "branch_and_bound",
+      "description": "0/1 knapsack solved by LCBB best-first branch and bound with a fractional-knapsack upper bound (FAT Module 6)",
+      "aliases": [
+        "knapsack lcbb",
+        "lcbb knapsack",
+        "0/1 knapsack lcbb",
+        "knapsack branch and bound",
+        "branch and bound knapsack",
+        "knapsack using branch and bound",
+        "knapsack with branch and bound",
+        "0/1 knapsack branch and bound",
+        "0/1 knapsack using branch and bound",
+        "least cost branch and bound knapsack",
+        "best first search knapsack",
+        "knapsack b&b",
+        "knapsack priority queue bound",
+        "cargo selection"
       ]
     },
     {
@@ -131,8 +412,13 @@
       "category": "string_matching",
       "description": "Naïve string matching: sliding window comparison, wildcard '?' matching, no adjacent duplicate matched characters filter",
       "aliases": [
-        "naive string matching", "naive pattern matching", "brute force string matching", "naive string search",
-        "wildcard string matching", "question mark wildcard matching", "no two consecutive matched characters identical",
+        "naive string matching",
+        "naive pattern matching",
+        "brute force string matching",
+        "naive string search",
+        "wildcard string matching",
+        "question mark wildcard matching",
+        "no two consecutive matched characters identical",
         "no adjacent duplicates matching"
       ]
     },
@@ -142,12 +428,34 @@
       "category": "string_matching",
       "description": "Knuth-Morris-Pratt (KMP) string matching: LPS / prefix function pi array, linear O(n+m) search, periodic string detection, non-overlapping matches, cyclic shift rotation",
       "aliases": [
-        "kmp", "knuth morris pratt", "kmp algorithm", "kmp string matching", "kmp pattern matching",
-        "lps array", "prefix function", "pi array", "longest prefix suffix",
-        "periodic string", "periodic string detection", "repeating base substring", "repeating telemetry packet",
-        "periodic telemetry", "periodic telemetry packet", "telemetry packet", "repeating telemetry", "periodic signal", "cyclic repeated pattern",
-        "cyclic shift", "circular shift", "rotational equivalence", "circular rotation",
-        "longest palindromic prefix", "prefix palindrome", "non-overlapping matches"
+        "kmp",
+        "knuth morris pratt",
+        "kmp algorithm",
+        "kmp string matching",
+        "kmp pattern matching",
+        "lps array",
+        "prefix function",
+        "pi array",
+        "longest prefix suffix",
+        "periodic string",
+        "periodic string detection",
+        "repeating base substring",
+        "repeating telemetry packet",
+        "periodic telemetry",
+        "periodic telemetry packet",
+        "telemetry packet",
+        "repeating telemetry",
+        "periodic signal",
+        "cyclic repeated pattern",
+        "cyclic shift",
+        "circular shift",
+        "rotational equivalence",
+        "circular rotation",
+        "longest palindromic prefix",
+        "prefix palindrome",
+        "non-overlapping matches",
+        "intrusion detection payload",
+        "network intrusion detection"
       ]
     },
     {
@@ -156,9 +464,19 @@
       "category": "string_matching",
       "description": "Rabin-Karp string matching: polynomial rolling hash with modulo arithmetic, base 256, collision verification, multiple pattern dictionary search",
       "aliases": [
-        "rabin karp", "rabin-karp", "rabin karp algorithm", "rabin karp string matching",
-        "rolling hash", "polynomial rolling hash", "hash based string matching",
-        "multiple pattern search", "dictionary matching", "detect multiple signatures"
+        "rabin karp",
+        "rabin-karp",
+        "rabin karp algorithm",
+        "rabin karp string matching",
+        "rolling hash",
+        "polynomial rolling hash",
+        "hash based string matching",
+        "multiple pattern search",
+        "dictionary matching",
+        "detect multiple signatures",
+        "iot telemetry stream",
+        "alert telemetry signature",
+        "sensor transmission signature"
       ]
     },
     {
@@ -167,10 +485,21 @@
       "category": "string_matching",
       "description": "Suffix Structures: Suffix Array + Kasai's O(n) LCP array, Longest Repeated Substring, Longest Common Substring of two strings, distinct substring count, Suffix Tree equivalence",
       "aliases": [
-        "suffix array", "suffix tree", "suffix trees", "lcp array", "kasai algorithm", "kasai's algorithm",
-        "longest common prefix", "longest repeated substring", "deepest internal node", "deepest repeated signature",
-        "longest common substring", "longest common substring two strings", "generalized suffix tree",
-        "distinct substrings count", "count distinct substrings"
+        "suffix array",
+        "suffix tree",
+        "suffix trees",
+        "lcp array",
+        "kasai algorithm",
+        "kasai's algorithm",
+        "longest common prefix",
+        "longest repeated substring",
+        "deepest internal node",
+        "deepest repeated signature",
+        "longest common substring",
+        "longest common substring two strings",
+        "generalized suffix tree",
+        "distinct substrings count",
+        "count distinct substrings"
       ]
     },
     {
@@ -179,10 +508,32 @@
       "category": "graph_algorithms",
       "description": "Minimum Spanning Tree (MST): Kruskal's algorithm with DSU (path compression + rank), Prim's algorithm with min-heap priority queue, Mandatory and Forbidden edges, Strictly Second Best MST",
       "aliases": [
-        "mst", "minimum spanning tree", "kruskal", "kruskal's algorithm", "kruskals algorithm",
-        "prim", "prim's algorithm", "prims algorithm", "disjoint set union", "dsu mst",
-        "mandatory and forbidden edges", "mandatory fiber links", "mandatory fiber cables", "constrained mst", "compulsory edges mst",
-        "second best mst", "second minimum spanning tree", "strictly second best mst", "2nd mst", "backup network mst", "redundant backup network"
+        "mst",
+        "minimum spanning tree",
+        "kruskal",
+        "kruskal's algorithm",
+        "kruskals algorithm",
+        "prim",
+        "prim's algorithm",
+        "prims algorithm",
+        "disjoint set union",
+        "dsu mst",
+        "mandatory and forbidden edges",
+        "mandatory fiber links",
+        "mandatory fiber cables",
+        "constrained mst",
+        "compulsory edges mst",
+        "second best mst",
+        "second minimum spanning tree",
+        "strictly second best mst",
+        "2nd mst",
+        "backup network mst",
+        "redundant backup network",
+        "power substations",
+        "transmission lines",
+        "water treatment stations",
+        "fiber optic cables",
+        "fiber-optic cables"
       ]
     },
     {
@@ -191,10 +542,21 @@
       "category": "graph_algorithms",
       "description": "Floyd-Warshall All-Pairs Shortest Path (APSP): O(V^3) DP recurrence (outermost k loop), path reconstruction matrix, negative cycle detection (-INF marking), widest path / bottleneck capacity, transitive closure",
       "aliases": [
-        "floyd warshall", "floyd-warshall", "floyd warshall algorithm", "floyd warshall apsp",
-        "all pairs shortest path floyd warshall", "apsp dynamic programming", "floyd warshall path reconstruction",
-        "floyd warshall negative cycle", "negative weight cycle floyd", "infinite gain loops",
-        "widest path", "maximum bottleneck capacity", "maximin dp", "transitive closure", "warshall reachability"
+        "floyd warshall",
+        "floyd-warshall",
+        "floyd warshall algorithm",
+        "floyd warshall apsp",
+        "all pairs shortest path floyd warshall",
+        "apsp dynamic programming",
+        "floyd warshall path reconstruction",
+        "floyd warshall negative cycle",
+        "negative weight cycle floyd",
+        "infinite gain loops",
+        "widest path",
+        "maximum bottleneck capacity",
+        "maximin dp",
+        "transitive closure",
+        "warshall reachability"
       ]
     },
     {
@@ -203,9 +565,15 @@
       "category": "graph_algorithms",
       "description": "Johnson's Algorithm for All-Pairs Shortest Path: sparse graphs O(V^2 log V + VE), 5 execution steps, synthetic source, Bellman-Ford potential reweighting, V x Dijkstra",
       "aliases": [
-        "johnson", "johnson's algorithm", "johnsons algorithm", "johnson apsp",
-        "all pairs shortest path sparse graph", "reweighting algorithm", "bellman ford potential",
-        "synthetic source reweighting", "johnson negative edges"
+        "johnson",
+        "johnson's algorithm",
+        "johnsons algorithm",
+        "johnson apsp",
+        "all pairs shortest path sparse graph",
+        "reweighting algorithm",
+        "bellman ford potential",
+        "synthetic source reweighting",
+        "johnson negative edges"
       ]
     },
     {
@@ -214,10 +582,22 @@
       "category": "graph_algorithms",
       "description": "Bellman-Ford Single-Source Shortest Path (SSSP): handles negative weights, O(V*E) edge relaxation, negative cycle detection, cycle vertex extraction, bounded-hop shortest path (K layovers), currency arbitrage",
       "aliases": [
-        "bellman ford", "bellman-ford", "bellman ford algorithm", "sssp negative weights",
-        "single source shortest path negative edges", "negative weight cycle detection",
-        "bellman ford negative cycle", "detect arbitrage", "currency arbitrage",
-        "shortest path with at most k edges", "k layovers shortest path", "bounded hop shortest path"
+        "bellman ford",
+        "bellman-ford",
+        "bellman ford algorithm",
+        "sssp negative weights",
+        "single source shortest path negative edges",
+        "negative weight cycle detection",
+        "bellman ford negative cycle",
+        "detect arbitrage",
+        "currency arbitrage",
+        "shortest path with at most k edges",
+        "k layovers shortest path",
+        "bounded hop shortest path",
+        "regenerative braking",
+        "electric delivery fleet",
+        "negative energy costs",
+        "warehouse distribution centers"
       ]
     },
     {
@@ -226,10 +606,22 @@
       "category": "network_flow",
       "description": "Ford-Fulkerson Method for Maximum Network Flow: residual graph G_f, augmenting path DFS, bottleneck capacity, Max-Flow Min-Cut theorem, minimum cut edge extraction, bipartite matching, vertex capacities",
       "aliases": [
-        "ford fulkerson", "ford-fulkerson", "ford fulkerson method", "max flow",
-        "maximum flow", "network flow", "max-flow min-cut", "max flow min cut",
-        "minimum cut", "min cut", "bipartite matching max flow", "vertex capacities",
-        "bottleneck link detection", "flow network"
+        "ford fulkerson",
+        "ford-fulkerson",
+        "ford fulkerson method",
+        "max flow",
+        "maximum flow",
+        "network flow",
+        "max-flow min-cut",
+        "max flow min cut",
+        "minimum cut",
+        "min cut",
+        "bipartite matching max flow",
+        "vertex capacities",
+        "bottleneck link detection",
+        "flow network",
+        "evacuation network",
+        "evacuate danger zone"
       ]
     },
     {
@@ -238,10 +630,201 @@
       "category": "network_flow",
       "description": "Edmonds-Karp Algorithm for Maximum Flow: strongly polynomial O(V*E^2) implementation using BFS for shortest augmenting paths, edge-disjoint paths (Menger's theorem), multi-source multi-sink networks, image segmentation",
       "aliases": [
-        "edmonds karp", "edmonds-karp", "edmonds karp algorithm", "edmond karp",
-        "bfs max flow", "shortest augmenting path", "polynomial max flow",
-        "edge disjoint paths", "menger's theorem", "multi source multi sink flow",
-        "supersource supersink", "image segmentation min cut"
+        "edmonds karp",
+        "edmonds-karp",
+        "edmonds karp algorithm",
+        "edmond karp",
+        "bfs max flow",
+        "shortest augmenting path",
+        "polynomial max flow",
+        "edge disjoint paths",
+        "menger's theorem",
+        "multi source multi sink flow",
+        "supersource supersink",
+        "image segmentation min cut",
+        "oxygen delivery",
+        "life support network",
+        "data center bandwidth",
+        "airport shuttle",
+        "shuttle passengers"
+      ]
+    },
+    {
+      "id": "line_segments_sweep_line",
+      "file": "line_segments_sweep_line.md",
+      "category": "computational_geometry",
+      "description": "Line Segments: Properties, Intersection, and Sweeping Lines: 2D cross product orientation test, CLRS segment intersection test, exact intersection coordinates, Bentley-Ottmann algorithm, Shamos-Hoey algorithm, Orthogonal segment intersection via Fenwick tree sweep line",
+      "aliases": [
+        "line segment",
+        "line segments",
+        "line segment properties",
+        "segment properties",
+        "segment intersection",
+        "line segment intersection",
+        "line intersection",
+        "do lines intersect",
+        "intersecting line segments",
+        "sweeping line",
+        "sweep line",
+        "sweep-line",
+        "sweeping lines",
+        "bentley ottmann",
+        "bentley-ottmann",
+        "shamos hoey",
+        "shamos-hoey",
+        "orthogonal segment intersection",
+        "orthogonal sweep line",
+        "horizontal vertical segment intersection",
+        "cross product geometry",
+        "orientation test",
+        "collinear segments",
+        "on segment",
+        "point in polygon",
+        "ray casting point in polygon",
+        "pcb traces",
+        "trace segments",
+        "design rule checking",
+        "pcb collision"
+      ]
+    },
+    {
+      "id": "convex_hull_graham_jarvis",
+      "file": "convex_hull_graham_jarvis.md",
+      "category": "computational_geometry",
+      "description": "Convex Hull Algorithms: Graham's Scan O(n log n), Andrew's Monotone Chain (modern polar-free Graham variant), Jarvis' March (Gift Wrapping) output-sensitive O(n*h), Chan's algorithm O(n log h), Rotating Calipers, strictly convex vs collinear boundary inclusion",
+      "aliases": [
+        "convex hull",
+        "convex hull algorithms",
+        "convex hull finding",
+        "convex hull finding algorithms",
+        "graham scan",
+        "graham's scan",
+        "grahams scan",
+        "graham scan algorithm",
+        "jarvis march",
+        "jarvis' march",
+        "jarvis march algorithm",
+        "jarvises march",
+        "gift wrapping",
+        "gift wrapping algorithm",
+        "monotone chain",
+        "andrew's monotone chain",
+        "andrew monotone chain",
+        "monotone chain convex hull",
+        "chan's algorithm",
+        "rotating calipers",
+        "diameter of point set",
+        "extreme points convex hull",
+        "collinear points convex hull",
+        "strictly convex hull",
+        "quickhull",
+        "quick hull",
+        "forestry sensors",
+        "ground sensor nodes",
+        "drone swarms",
+        "perimeter wire"
+      ]
+    },
+    {
+      "id": "closest_pair_of_points",
+      "file": "closest_pair_of_points.md",
+      "category": "computational_geometry",
+      "description": "Closest pair of points in 2D via divide & conquer with the strip check, O(n log n) (Lab 10, FAT Module 9)",
+      "aliases": [
+        "closest pair",
+        "closest pair of points",
+        "closest points",
+        "nearest pair of points",
+        "minimum distance between points",
+        "minimum euclidean distance",
+        "air traffic control radar",
+        "aircraft separation",
+        "agv",
+        "automated guided vehicles",
+        "min starting separation",
+        "drone separation"
+      ]
+    },
+    {
+      "id": "np_certificate_verification",
+      "file": "np_certificate_verification.md",
+      "category": "np_completeness",
+      "description": "Verifying NP certificates in polynomial time: job-selection certificate and spanning network + budget check (Lab 11, FAT Module 10)",
+      "aliases": [
+        "np complete",
+        "np-complete",
+        "npc",
+        "np completeness",
+        "np-completeness",
+        "np hard",
+        "class np",
+        "certificate verification",
+        "verify certificate",
+        "polynomial time verification",
+        "polynomial-time verification",
+        "verifier",
+        "decision problem",
+        "industrial job selection",
+        "communication network verification",
+        "proposed communication network",
+        "budget connectivity check"
+      ]
+    },
+    {
+      "id": "set_cover_greedy_approximation",
+      "file": "set_cover_greedy_approximation.md",
+      "category": "approximation",
+      "description": "Greedy weighted set cover approximation by cost per newly covered element, H_n factor (Lab 11, FAT Module 10)",
+      "aliases": [
+        "set cover",
+        "set cover approximation",
+        "greedy set cover",
+        "weighted set cover",
+        "approximation algorithm",
+        "approximation algorithms",
+        "greedy approximation",
+        "sensor placement",
+        "monitor all machines",
+        "cost effectiveness ratio",
+        "harmonic approximation"
+      ]
+    },
+    {
+      "id": "vertex_cover_approximation",
+      "file": "vertex_cover_approximation.md",
+      "category": "approximation",
+      "description": "Vertex cover 2-approximation: take both endpoints of each uncovered edge (FAT Module 10)",
+      "aliases": [
+        "vertex cover",
+        "vertex cover approximation",
+        "2-approximation",
+        "2 approximation",
+        "approx vertex cover",
+        "maximal matching",
+        "guard placement at intersections",
+        "minimum vertex cover"
+      ]
+    },
+    {
+      "id": "randomized_sampling",
+      "file": "randomized_sampling.md",
+      "category": "randomized",
+      "description": "Randomized estimation by sampling without replacement with a fixed seed (std::mt19937 + shuffle); Monte Carlo vs Las Vegas (Lab 11, FAT Module 10)",
+      "aliases": [
+        "randomized algorithm",
+        "randomized algorithms",
+        "randomised algorithm",
+        "random sampling",
+        "sampling without replacement",
+        "monte carlo",
+        "las vegas",
+        "randomized estimation",
+        "failed servers",
+        "faulty sensors",
+        "faulty sensor estimation",
+        "estimate failure rate",
+        "mt19937",
+        "fixed seed sampling"
       ]
     },
     {
@@ -250,9 +833,62 @@
       "category": "exam_reference",
       "description": "PAT-2 Master Complexity Matrix & Twist Detection Guide: 'Spot the Twist in 30 Seconds' keyword mapping, and Pre-Flight Zero-Mark Avoidance checklist",
       "aliases": [
-        "cheat sheet", "pat2", "exam guide", "twist cheat sheet", "spot the twist", "twist detection", "pat2 cheat sheet", "pat2 guide",
-        "master complexity matrix", "complexity comparison", "exam keyword translation", "zero mark avoidance",
-        "pre-flight checklist", "twist detection guide", "pat2 master preparation guide"
+        "cheat sheet",
+        "pat2",
+        "exam guide",
+        "twist cheat sheet",
+        "spot the twist",
+        "twist detection",
+        "pat2 cheat sheet",
+        "pat2 guide",
+        "master complexity matrix",
+        "complexity comparison",
+        "exam keyword translation",
+        "zero mark avoidance",
+        "pre-flight checklist",
+        "twist detection guide",
+        "pat2 master preparation guide"
+      ]
+    },
+    {
+      "id": "fat_complexity_master_table",
+      "file": "fat_complexity_master_table.md",
+      "category": "exam_reference",
+      "description": "FAT guide master complexity table: paradigm, best/average/worst time and space for every lab algorithm (FAT Module 11)",
+      "aliases": [
+        "fat complexity",
+        "fat complexity table",
+        "fat master table",
+        "complexity of all algorithms",
+        "all labs complexity",
+        "lab complexity table",
+        "time complexity table",
+        "space complexity table",
+        "fat master complexity"
+      ]
+    },
+    {
+      "id": "fat_exam_traps_cheese_codes",
+      "file": "fat_exam_traps_cheese_codes.md",
+      "category": "exam_reference",
+      "description": "FAT guide: C++ exam traps (pass-by-value, 0/1-indexing, max-heap default, overflow, negative modulo, state reset) and emergency shortcut codes (FAT Module 12)",
+      "aliases": [
+        "silly mistakes",
+        "common mistakes",
+        "exam traps",
+        "c++ traps",
+        "cheese code",
+        "cheese codes",
+        "exam shortcut",
+        "exam shortcuts",
+        "emergency cheat sheet",
+        "fat cheat sheet",
+        "fat traps",
+        "fat survival",
+        "survival guide",
+        "pass by value bug",
+        "negative modulo",
+        "integer overflow trap"
       ]
     }
   ]

@@ -107,3 +107,52 @@ vector<int> naiveWithNoAdjacentDuplicates(const string& text, const string& patt
     return validOccurrences;
 }
 ```
+
+---
+
+# FAT Lab-Exam Version & Your Lab Programs (BCSE204P, Dr. Sakthivel R)
+
+Every program below was extracted from your lab reports / FAT guide, compiled with `g++ -std=c++17 -Wall -O2`, and run; outputs shown are the real program output.
+
+## Lab questions & verified answers
+
+| Lab question | Scenario & input data | Verified answer |
+|---|---|---|
+| FAT Module 8 | Text ABABDABACDABABCABAB, pattern ABABCABAB | shift **10** |
+
+## Naive String Matching Algorithm
+
+### Naive String Matching
+**Lab scenario:** Direct Exhaustive Pattern Search in Payload
+
+Given a text $T[0 … n-1]$ and pattern $P[0 … m-1]$, slide $P$ over all $n - m + 1$ possible shift positions $s$ and check character-by-character whether $T[s … s+m-1] == P[0 … m-1]$.
+
+### Concise C++ Implementation
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+void naiveSearch(const string& text, const string& pat) {
+    int n = text.length(), m = pat.length();
+    for (int i = 0; i <= n - m; ++i) {
+        int j = 0;
+        while (j < m && text[i + j] == pat[j]) j++;
+        if (j == m) cout << "Pattern found at shift: " << i << "\n";
+    }
+}
+
+int main() {
+    naiveSearch("ABABDABACDABABCABAB", "ABABCABAB");
+    return 0;
+}
+```
+
+Verified output (compiled with `g++ -std=c++17 -Wall -O2` and run):
+```text
+Pattern found at shift: 10
+```
+
+**Complexity:** best O(n) · average O(n + m) · worst O((n - m + 1) m) · auxiliary space O(1)  
+**Recurrence:** Exhaustive nested loop checking
